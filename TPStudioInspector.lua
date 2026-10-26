@@ -507,12 +507,6 @@ v155.Position = UDim2.fromOffset(2,2);
 v155.ZIndex = 151;
 local v156 = nil;
 local v157 = nil;
-local v158 = nil;
-local v159 = nil;
-local v160 = nil;
-local v161 = nil;
-local v162 = nil;
-local v163 = nil;
 local v164 = {
 	"Name","Archivable","Enabled","ResetOnSpawn","DisplayOrder","IgnoreGuiInset","ZIndexBehavior","ScreenInsets","SafeAreaCompatibility","ClipToDeviceSafeArea",
 	"Position","Size","AnchorPoint","Rotation","Visible","Active","Selectable","ClipsDescendants","ZIndex","LayoutOrder","AutomaticSize",
@@ -593,69 +587,91 @@ local function v174(v175) --[[ Name: ExportScreenGui ]]
 	return table.concat(v176,"\n");
 end;
 local function v192(v193) --[[ Name: ShowExportWindow ]]
-	if v157 then v157:Destroy(); end;
-	local v202 = v174(v193) or "";
-	v157 = v21("Frame",v8,{
-		Name = "GUIExport",Position = UDim2.new(0.5,-350,0.5,-230),Size = UDim2.fromOffset(700,460),
-		BackgroundColor3 = v7.Background,BorderColor3 = v7.Border,BorderSizePixel = 1,
-		Active = true,ZIndex = 160
-	});
-	local v194 = v21("Frame",v157,{
-		Name = "Header",Size = UDim2.new(1,0,0,32),BackgroundColor3 = v7.Header,
-		BorderSizePixel = 0,Active = true,ZIndex = 161
-	});
-	local v195 = v28(v194,"Title",UDim2.new(1,-42,1,0),"Código generado: "..v193.Name);
-	v195.Position = UDim2.fromOffset(9,0);v195.ZIndex = 162;
-	local v196 = v33(v194,"Close",UDim2.fromOffset(32,32),"×");
-	v196.Position = UDim2.new(1,-32,0,0);v196.ZIndex = 162;
-	v196.MouseButton1Click:Connect(function() --[[ Name: CloseExport ]]
-		v157:Destroy();v157 = nil;
-	end);
-	local v197 = v21("TextBox",v157,{
-		Name = "GeneratedScript",Position = UDim2.fromOffset(9,65),Size = UDim2.new(1,-18,1,-154),
-		BackgroundColor3 = v7.Input,BorderSizePixel = 0,Text = v202,
-		TextColor3 = v7.Text,TextSize = 13,Font = Enum.Font.Code,
-		TextXAlignment = Enum.TextXAlignment.Left,TextYAlignment = Enum.TextYAlignment.Top,
-		TextWrapped = false,MultiLine = true,ClearTextOnFocus = false,
-		TextEditable = true,ZIndex = 161
-	});
-	local v198 = v28(v157,"Hint",UDim2.new(1,-18,0,24),"Selecciona y copia el código completo para usarlo en tu LocalScript.");
-	v198.Position = UDim2.fromOffset(10,34);v198.ZIndex = 161;
-	local v203 = v33(v157,"SelectAll",UDim2.fromOffset(170,34),"Seleccionar todo");
-	v203.Position = UDim2.new(0,10,1,-79);v203.ZIndex = 162;
-	local v204 = v33(v157,"CopyCode",UDim2.fromOffset(160,34),"Copiar código");
-	v204.Position = UDim2.new(0,190,1,-79);v204.ZIndex = 162;
-	local v205 = v28(v157,"CopyStatus",UDim2.new(1,-365,0,34),"");
-	v205.Position = UDim2.new(0,365,1,-79);v205.ZIndex = 162;v205.TextWrapped = true;
-	local function v206() --[[ Name: SelectAllGeneratedCode ]]
-		v197.Text = v202;
-		v197:CaptureFocus();
-		v197.CursorPosition = #v202+1;
-		v197.SelectionStart = 1;
-	end;
-	v203.MouseButton1Click:Connect(function() --[[ Name: SelectAll ]]
-		v206();
-		v205.Text = "Seleccionado. Pulsa Ctrl+C.";
-	end);
-	v204.MouseButton1Click:Connect(function() --[[ Name: CopyCode ]]
-		local v207 = setclipboard or toclipboard;
-		if type(v207) == "function" then
-			local v208 = pcall(v207,v202);
-			if v208 then
-				v205.Text = "Código copiado.";
-				return;
-			end;
-		end;
-		v206();
-		v205.Text = "Seleccionado. Pulsa Ctrl+C.";
-	end);
-	local v199 = v28(v157,"Limit",UDim2.new(1,-18,0,23),"Copia visual local: no incluye Source de scripts ni eventos internos.");
-	v199.Position = UDim2.new(0,10,1,-32);v199.TextColor3 = v7.Muted;v199.ZIndex = 161;
-	v194.InputBegan:Connect(function(v200) --[[ Name: DragExport ]]
-		if v200.UserInputType == Enum.UserInputType.MouseButton1 or v200.UserInputType == Enum.UserInputType.Touch then
-			v16 = {Window = v157,Input = v200,Mode = "Move",Start = v200.Position,Position = v157.Position,Size = v157.AbsoluteSize};
-		end;
-	end);
+    if v157 then v157:Destroy();v157=nil; end;
+    local v202 = v174(v193) or "";
+    local v203 = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1280,720);
+    local v204 = math.min(850,math.max(360,v203.X-35));
+    local v205 = math.min(590,math.max(300,v203.Y-60));
+    v157 = v21("Frame",v8,{
+        Name="GUIExport",AnchorPoint=Vector2.new(0.5,0.5),Position=UDim2.fromScale(0.5,0.5),
+        Size=UDim2.fromOffset(v204,v205),BackgroundColor3=Color3.fromRGB(16,17,20),
+        BackgroundTransparency=0.04,BorderSizePixel=0,Active=true,ZIndex=160
+    });
+    v21("UICorner",v157,{CornerRadius=UDim.new(0,12)});
+    v21("UIStroke",v157,{Color=Color3.fromRGB(91,94,103),Thickness=1,Transparency=0.38});
+    local v206 = v21("Frame",v157,{
+        Name="Header",Size=UDim2.new(1,0,0,61),BackgroundColor3=Color3.fromRGB(26,27,31),
+        BackgroundTransparency=0.05,BorderSizePixel=0,Active=true,ZIndex=161
+    });
+    v21("UICorner",v206,{CornerRadius=UDim.new(0,12)});
+    local v207 = v28(v206,"Title",UDim2.new(1,-58,0,30),"▣  EXPORTAR GUI  ·  "..v193.Name);
+    v207.Position=UDim2.fromOffset(15,5);v207.ZIndex=162;v207.TextSize=17;
+    v207.Font=Enum.Font.GothamBold;v207.TextColor3=Color3.new(1,1,1);
+    local v208 = v28(v206,"Subtitle",UDim2.new(1,-30,0,19),"Código Luau  ·  "..tostring(#v202).." caracteres  ·  copia visual del cliente");
+    v208.Position=UDim2.fromOffset(16,34);v208.ZIndex=162;v208.TextSize=12;
+    v208.Font=Enum.Font.Gotham;v208.TextColor3=Color3.fromRGB(172,175,183);
+    local v209 = v33(v206,"Close",UDim2.fromOffset(34,34),"×");
+    v209.Position=UDim2.new(1,-43,0,10);v209.ZIndex=164;v209.BackgroundColor3=Color3.fromRGB(45,46,52);
+    v21("UICorner",v209,{CornerRadius=UDim.new(0,7)});
+    v209.MouseButton1Click:Connect(function() --[[ Name: CloseExport ]]
+        if v157 then v157:Destroy();v157=nil;end;
+    end);
+    local v210 = v21("Frame",v157,{
+        Name="CodeSurface",Position=UDim2.fromOffset(13,72),Size=UDim2.new(1,-26,1,-160),
+        BackgroundColor3=Color3.fromRGB(9,10,13),BorderSizePixel=0,ZIndex=161
+    });
+    v21("UICorner",v210,{CornerRadius=UDim.new(0,8)});
+    v21("UIStroke",v210,{Color=Color3.fromRGB(58,60,67),Thickness=1,Transparency=0.35});
+    local v211 = v21("TextBox",v210,{
+        Name="GeneratedScript",Position=UDim2.fromOffset(9,8),Size=UDim2.new(1,-18,1,-16),
+        BackgroundTransparency=1,Text=v202,TextColor3=Color3.fromRGB(225,230,239),
+        TextSize=13,Font=Enum.Font.Code,TextXAlignment=Enum.TextXAlignment.Left,
+        TextYAlignment=Enum.TextYAlignment.Top,TextWrapped=false,MultiLine=true,
+        ClearTextOnFocus=false,TextEditable=true,ZIndex=162
+    });
+    local v212 = v33(v157,"SelectAll",UDim2.fromOffset(169,38),"▤  Seleccionar todo");
+    v212.Position=UDim2.new(0,13,1,-77);v212.ZIndex=163;
+    v212.BackgroundColor3=Color3.fromRGB(58,60,67);
+    v21("UICorner",v212,{CornerRadius=UDim.new(0,8)});
+    local v213 = v33(v157,"CopyCode",UDim2.fromOffset(163,38),"▣  Copiar código");
+    v213.Position=UDim2.new(0,190,1,-77);v213.ZIndex=163;
+    v213.BackgroundColor3=Color3.fromRGB(231,232,235);v213.TextColor3=Color3.fromRGB(16,17,20);
+    v21("UICorner",v213,{CornerRadius=UDim.new(0,8)});
+    local v214 = v28(v157,"Status",UDim2.new(1,-370,0,37),"Selecciona todo y pulsa Ctrl+C.");
+    v214.Position=UDim2.new(0,365,1,-76);v214.ZIndex=163;v214.TextWrapped=true;
+    v214.TextSize=12;v214.TextColor3=Color3.fromRGB(190,192,199);
+    local v215 = v28(v157,"Limit",UDim2.new(1,-25,0,24),"Solo apariencia y propiedades legibles; no exporta código fuente ni conexiones de scripts.");
+    v215.Position=UDim2.new(0,14,1,-31);v215.ZIndex=163;v215.TextSize=12;
+    v215.TextColor3=Color3.fromRGB(149,151,160);
+    local function v216() --[[ Name: SelectGeneratedCode ]]
+        if not v211.Parent then return; end;
+        v211.Text=v202;
+        v211:CaptureFocus();
+        task.defer(function() --[[ Name: ApplySelectionAfterFocus ]]
+            if not v211.Parent then return; end;
+            v211.CursorPosition=#v202+1;
+            v211.SelectionStart=1;
+        end);
+    end;
+    v212.MouseButton1Click:Connect(function() --[[ Name: SelectAll ]]
+        v216();
+        v214.Text="Texto seleccionado. Presiona Ctrl+C.";
+    end);
+    v213.MouseButton1Click:Connect(function() --[[ Name: CopyCode ]]
+        -- No official clipboard writing API exists for a Roblox LocalScript.
+        local v217 = setclipboard or toclipboard;
+        if type(v217)=="function" then
+            local v218 = pcall(v217,v202);
+            if v218 then v214.Text="Código copiado al portapapeles.";return;end;
+        end;
+        v216();
+        v214.Text="Pulsa Ctrl+C para copiar el texto seleccionado.";
+    end);
+    v206.InputBegan:Connect(function(v219) --[[ Name: DragExport ]]
+        if v219.UserInputType==Enum.UserInputType.MouseButton1 or v219.UserInputType==Enum.UserInputType.Touch then
+            v16={Window=v157,Input=v219,Mode="Move",Start=v219.Position,Position=v157.Position,Size=v157.AbsoluteSize};
+        end;
+    end);
 end;
 v155.MouseButton1Click:Connect(function() --[[ Name: CopyGui ]]
 	v154.Visible = false;
