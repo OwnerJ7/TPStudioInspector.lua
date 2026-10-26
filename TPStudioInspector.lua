@@ -1,5 +1,5 @@
 
---[[ Name: TP Studio Inspector | Client ]]
+--[[ TP Studio Inspector | Client ]]
 local v1 = game:GetService("Players");
 local v2 = game:GetService("UserInputService");
 local v3 = game:GetService("Workspace");
@@ -7,32 +7,34 @@ local v4 = v1.LocalPlayer;
 local v5 = v4:WaitForChild("PlayerGui");
 local v6 = v5:FindFirstChild("TPStudioInspector");
 if v6 then v6:Destroy(); end;
-v6 = Instance.new("ScreenGui");
-v6.Name = "TPStudioInspector";
-v6.ResetOnSpawn = false;
-v6.IgnoreGuiInset = false;
-v6.DisplayOrder = 100;
-v6.Parent = v5;
 
 local v7 = {
-    Background = Color3.fromRGB(38,38,38),
-    Header = Color3.fromRGB(45,45,45),
-    Row = Color3.fromRGB(48,48,48),
-    Alternate = Color3.fromRGB(43,43,43),
-    Selected = Color3.fromRGB(12,74,170),
-    Text = Color3.fromRGB(225,225,225),
+    Background = Color3.fromRGB(37,37,37),
+    Header = Color3.fromRGB(47,47,47),
+    Row = Color3.fromRGB(44,44,44),
+    Alternate = Color3.fromRGB(39,39,39),
+    Input = Color3.fromRGB(52,52,52),
+    Selected = Color3.fromRGB(16,78,169),
+    Text = Color3.fromRGB(230,230,230),
     Muted = Color3.fromRGB(165,165,165),
     Border = Color3.fromRGB(65,65,65)
 };
-local v8 = {};
+local v8 = Instance.new("ScreenGui");
+v8.Name = "TPStudioInspector";
+v8.ResetOnSpawn = false;
+v8.IgnoreGuiInset = false;
+v8.DisplayOrder = 100;
+v8.ZIndexBehavior = Enum.ZIndexBehavior.Sibling;
+v8.Parent = v5;
+
 local v9 = v3;
 local v10 = {[v3] = true};
-local v11 = nil;
+local v11 = {};
 local v12 = nil;
 local v13 = nil;
 local v14 = false;
 local v15 = false;
-local v16 = nil;
+local v16 = 0;
 
 local function v17(v18,v19,v20) --[[ Name: Create ]]
     local v21 = Instance.new(v18);
@@ -43,544 +45,632 @@ local function v17(v18,v19,v20) --[[ Name: Create ]]
     return v21;
 end;
 
-local function v24(v25,v26,v27,v28,v29) --[[ Name: Label ]]
+local function v24(v25,v26,v27,v28) --[[ Name: CreateLabel ]]
     return v17("TextLabel",v25,{
         Name = v26,
         Size = v27,
         BackgroundTransparency = 1,
         Text = v28,
         TextColor3 = v7.Text,
-        TextSize = v29 or 13,
+        TextSize = 14,
+        Font = Enum.Font.SourceSans,
         TextXAlignment = Enum.TextXAlignment.Left,
         TextTruncate = Enum.TextTruncate.AtEnd,
-        Font = Enum.Font.SourceSans
+        BorderSizePixel = 0
     });
 end;
 
-local function v30(v31,v32,v33,v34) --[[ Name: Button ]]
-    return v17("TextButton",v31,{
-        Name = v32,
-        Size = v33,
+local function v29(v30,v31,v32,v33) --[[ Name: CreateButton ]]
+    return v17("TextButton",v30,{
+        Name = v31,
+        Size = v32,
         BackgroundColor3 = v7.Header,
         BorderSizePixel = 0,
-        Text = v34,
+        Text = v33,
         TextColor3 = v7.Text,
         TextSize = 14,
-        Font = Enum.Font.SourceSans
+        Font = Enum.Font.SourceSans,
+        AutoButtonColor = true
     });
 end;
 
-local function v35(v36,v37,v38) --[[ Name: GetIcon ]]
-    if v36:IsA("Folder") then return "▣",Color3.fromRGB(232,184,78); end;
-    if v36:IsA("Model") then return "⬡",Color3.fromRGB(170,190,235); end;
-    if v36:IsA("MeshPart") then return "◆",Color3.fromRGB(120,190,230); end;
-    if v36:IsA("BasePart") then return "■",Color3.fromRGB(150,190,220); end;
-    if v36:IsA("Sound") then return "♫",Color3.fromRGB(245,160,75); end;
-    if v36:IsA("LocalScript") then return "▤",Color3.fromRGB(95,210,160); end;
-    if v36:IsA("ModuleScript") then return "▤",Color3.fromRGB(180,140,225); end;
-    if v36:IsA("Script") then return "▤",Color3.fromRGB(110,175,240); end;
-    if v36:IsA("UIGradient") then return "◉",Color3.fromRGB(195,195,225); end;
-    if v36:IsA("GuiObject") then return "▣",Color3.fromRGB(235,145,100); end;
-    if v36:IsA("Light") then return "☼",Color3.fromRGB(245,220,110); end;
-    if v36:IsA("Attachment") then return "◎",Color3.fromRGB(170,220,190); end;
-    if v36:IsA("ValueBase") then return "◇",Color3.fromRGB(120,220,160); end;
+local function v34(v35) --[[ Name: GetObjectIcon ]]
+    if v35:IsA("Folder") then
+        return "▣",Color3.fromRGB(241,190,80);
+    elseif v35:IsA("Model") then
+        return "⬡",Color3.fromRGB(160,184,226);
+    elseif v35:IsA("MeshPart") then
+        return "◆",Color3.fromRGB(125,194,225);
+    elseif v35:IsA("BasePart") then
+        return "■",Color3.fromRGB(143,191,223);
+    elseif v35:IsA("Sound") then
+        return "♫",Color3.fromRGB(247,161,91);
+    elseif v35:IsA("LocalScript") then
+        return "▤",Color3.fromRGB(110,219,158);
+    elseif v35:IsA("ModuleScript") then
+        return "▤",Color3.fromRGB(190,145,240);
+    elseif v35:IsA("Script") then
+        return "▤",Color3.fromRGB(120,175,247);
+    elseif v35:IsA("UIGradient") then
+        return "◉",Color3.fromRGB(190,190,240);
+    elseif v35:IsA("GuiObject") then
+        return "▣",Color3.fromRGB(240,160,100);
+    elseif v35:IsA("Light") then
+        return "☼",Color3.fromRGB(255,219,105);
+    elseif v35:IsA("Attachment") then
+        return "◎",Color3.fromRGB(165,224,190);
+    elseif v35:IsA("ValueBase") then
+        return "◇",Color3.fromRGB(145,221,159);
+    end;
     return "•",v7.Muted;
 end;
 
-local function v39(v40,v41,v42,v43,v44,v45) --[[ Name: MakeWindow ]]
-    local v46 = v17("Frame",v6,{
-        Name = v40,
-        Position = v41,
-        Size = v42,
+local function v36(v37,v38,v39) --[[ Name: CreateWindow ]]
+    local v40 = v17("Frame",v8,{
+        Name = v37,
+        Position = v38,
+        Size = v39,
         BackgroundColor3 = v7.Background,
         BorderColor3 = v7.Border,
         BorderSizePixel = 1,
-        ClipsDescendants = true,
-        Active = true
+        Active = true,
+        ClipsDescendants = true
     });
-    local v47 = v17("Frame",v46,{
+    local v41 = v17("Frame",v40,{
         Name = "TitleBar",
-        Size = UDim2.new(1,0,0,29),
+        Size = UDim2.new(1,0,0,30),
         BackgroundColor3 = v7.Header,
         BorderSizePixel = 0,
         Active = true
     });
-    local v48 = v24(v47,"Title",UDim2.new(1,-40,1,0),v40,15);
-    v48.Position = UDim2.fromOffset(9,0);
-    v48.Font = Enum.Font.SourceSansSemibold;
-    local v49 = v30(v47,"Close",UDim2.fromOffset(29,29),"×");
-    v49.AnchorPoint = Vector2.new(1,0);
-    v49.Position = UDim2.fromScale(1,0);
-    local v50 = v17("Frame",v46,{
+    local v42 = v24(v41,"Title",UDim2.new(1,-75,1,0),v37);
+    v42.Position = UDim2.fromOffset(9,0);
+    v42.Font = Enum.Font.SourceSansSemibold;
+    v42.TextSize = 16;
+
+    local v43 = v29(v41,"Minimize",UDim2.fromOffset(29,30),"−");
+    v43.Position = UDim2.new(1,-59,0,0);
+    local v44 = v29(v41,"Close",UDim2.fromOffset(29,30),"×");
+    v44.Position = UDim2.new(1,-30,0,0);
+
+    local v45 = v17("Frame",v40,{
         Name = "ResizeHandle",
         AnchorPoint = Vector2.new(1,1),
         Position = UDim2.fromScale(1,1),
-        Size = UDim2.fromOffset(20,20),
+        Size = UDim2.fromOffset(21,21),
         BackgroundTransparency = 1,
         Active = true,
-        ZIndex = 8
+        ZIndex = 10
     });
-    local v51 = v24(v50,"Grip",UDim2.fromScale(1,1),"◢",17);
-    v51.TextXAlignment = Enum.TextXAlignment.Center;
-    v51.TextColor3 = v7.Muted;
+    local v46 = v24(v45,"Grip",UDim2.fromScale(1,1),"◢");
+    v46.TextXAlignment = Enum.TextXAlignment.Center;
+    v46.TextColor3 = v7.Muted;
 
-    v49.MouseButton1Click:Connect(function() --[[ Name: CloseWindow ]]
-        v46.Visible = false;
-        v45.Text = "Mostrar "..v40;
+    local v47 = v17("Frame",v40,{
+        Name = "Body",
+        Position = UDim2.fromOffset(0,30),
+        Size = UDim2.new(1,0,1,-30),
+        BackgroundTransparency = 1,
+        BorderSizePixel = 0
+    });
+
+    v44.MouseButton1Click:Connect(function() --[[ Name: CloseWindow ]]
+        v40.Visible = false;
     end);
 
-    local function v52(v53,v54) --[[ Name: BeginMove ]]
-        if v53.UserInputType ~= Enum.UserInputType.MouseButton1 and v53.UserInputType ~= Enum.UserInputType.Touch then return; end;
-        v11 = {
-            Target = v46,
-            Input = v53,
-            Mode = v54,
-            Start = v53.Position,
-            Position = v46.Position,
-            Size = v46.AbsoluteSize
+    v43.MouseButton1Click:Connect(function() --[[ Name: MinimizeWindow ]]
+        if v40:GetAttribute("Minimized") then
+            v40:SetAttribute("Minimized",false);
+            v40.Size = v40:GetAttribute("OriginalSize") or v39;
+            v47.Visible = true;
+            v45.Visible = true;
+        else
+            v40:SetAttribute("OriginalSize",v40.Size);
+            v40:SetAttribute("Minimized",true);
+            v40.Size = UDim2.new(v40.Size.X.Scale,v40.Size.X.Offset,0,30);
+            v47.Visible = false;
+            v45.Visible = false;
+        end;
+    end);
+
+    local function v48(v49,v50) --[[ Name: StartDrag ]]
+        if v49.UserInputType ~= Enum.UserInputType.MouseButton1 and v49.UserInputType ~= Enum.UserInputType.Touch then return; end;
+        v12 = {
+            Window = v40,
+            Input = v49,
+            Mode = v50,
+            Start = v49.Position,
+            Position = v40.Position,
+            Size = v40.AbsoluteSize
         };
     end;
 
-    v47.InputBegan:Connect(function(v55) --[[ Name: DragWindow ]]
-        v52(v55,"Move");
+    v41.InputBegan:Connect(function(v51) --[[ Name: DragWindow ]]
+        v48(v51,"Move");
     end);
-    v50.InputBegan:Connect(function(v56) --[[ Name: ResizeWindow ]]
-        v52(v56,"Resize");
+    v45.InputBegan:Connect(function(v52) --[[ Name: ResizeWindow ]]
+        v48(v52,"Resize");
     end);
-    v45.MouseButton1Click:Connect(function() --[[ Name: ToggleWindow ]]
-        v46.Visible = not v46.Visible;
-        v45.Text = (v46.Visible and "Ocultar " or "Mostrar ")..v40;
-    end);
-    return v46;
+    return v40,v47;
 end;
 
-local v57 = v17("Frame",v6,{
+local v53 = v17("Frame",v8,{
     Name = "Toolbar",
     Position = UDim2.fromOffset(8,8),
-    Size = UDim2.fromOffset(300,27),
+    Size = UDim2.fromOffset(302,27),
     BackgroundTransparency = 1
 });
-local v58 = v30(v57,"ExplorerToggle",UDim2.fromOffset(144,27),"Ocultar Explorador");
-local v59 = v30(v57,"PropertiesToggle",UDim2.fromOffset(150,27),"Ocultar Propiedades");
-v59.Position = UDim2.fromOffset(150,0);
+local v54 = v29(v53,"ExplorerToggle",UDim2.fromOffset(145,27),"Explorador");
+local v55 = v29(v53,"PropertiesToggle",UDim2.fromOffset(150,27),"Propiedades");
+v55.Position = UDim2.fromOffset(150,0);
 
-local v60 = v39("Explorador",UDim2.new(0,8,0,43),UDim2.fromOffset(310,490),nil,v58);
-local v61 = v39("Propiedades",UDim2.new(0,327,0,43),UDim2.fromOffset(365,490),nil,v59);
+local v56,v57 = v36("Explorador",UDim2.fromOffset(8,43),UDim2.fromOffset(300,470));
+local v58,v59 = v36("Propiedades",UDim2.fromOffset(317,43),UDim2.fromOffset(360,470));
 
-local v62 = v17("TextBox",v60,{
+v54.MouseButton1Click:Connect(function() --[[ Name: ToggleExplorer ]]
+    v56.Visible = not v56.Visible;
+end);
+v55.MouseButton1Click:Connect(function() --[[ Name: ToggleProperties ]]
+    v58.Visible = not v58.Visible;
+end);
+
+local v60 = v17("TextBox",v57,{
     Name = "Search",
-    Position = UDim2.fromOffset(7,35),
-    Size = UDim2.new(1,-14,0,27),
-    BackgroundColor3 = v7.Row,
+    Position = UDim2.fromOffset(7,7),
+    Size = UDim2.new(1,-14,0,28),
+    BackgroundColor3 = v7.Input,
     BorderSizePixel = 0,
     Text = "",
     PlaceholderText = "Buscar en Workspace...",
     PlaceholderColor3 = v7.Muted,
     TextColor3 = v7.Text,
-    TextSize = 13,
+    TextSize = 14,
+    Font = Enum.Font.SourceSans,
     ClearTextOnFocus = false,
-    TextXAlignment = Enum.TextXAlignment.Left,
-    Font = Enum.Font.SourceSans
+    TextXAlignment = Enum.TextXAlignment.Left
 });
-v17("UIPadding",v62,{PaddingLeft = UDim.new(0,8)});
+v17("UIPadding",v60,{PaddingLeft = UDim.new(0,8)});
 
-local v63 = v17("ScrollingFrame",v60,{
-    Name = "Tree",
-    Position = UDim2.fromOffset(3,68),
-    Size = UDim2.new(1,-6,1,-74),
+local v61 = v17("ScrollingFrame",v57,{
+    Name = "ObjectTree",
+    Position = UDim2.fromOffset(3,40),
+    Size = UDim2.new(1,-6,1,-45),
     BackgroundTransparency = 1,
     BorderSizePixel = 0,
     ScrollBarThickness = 5,
+    ScrollBarImageColor3 = v7.Muted,
     AutomaticCanvasSize = Enum.AutomaticSize.Y,
-    CanvasSize = UDim2.new(),
-    ScrollingDirection = Enum.ScrollingDirection.Y
+    CanvasSize = UDim2.new(0,0,0,0)
 });
-v17("UIListLayout",v63,{
+v17("UIListLayout",v61,{
     SortOrder = Enum.SortOrder.LayoutOrder,
     Padding = UDim.new(0,1)
 });
 
-local v64 = v17("Frame",v61,{
+local v62 = v17("Frame",v59,{
     Name = "SelectedObject",
-    Position = UDim2.fromOffset(0,29),
-    Size = UDim2.new(1,0,0,32),
+    Size = UDim2.new(1,0,0,34),
     BackgroundColor3 = v7.Row,
     BorderSizePixel = 0
 });
-local v65 = v24(v64,"SelectedName",UDim2.new(1,-12,1,0),"Workspace",15);
-v65.Position = UDim2.fromOffset(8,0);
-local v66 = v17("ScrollingFrame",v61,{
+local v63 = v24(v62,"ObjectName",UDim2.new(1,-15,1,0),"Workspace");
+v63.Position = UDim2.fromOffset(8,0);
+v63.TextSize = 15;
+
+local v64 = v17("ScrollingFrame",v59,{
     Name = "PropertyList",
-    Position = UDim2.fromOffset(3,65),
-    Size = UDim2.new(1,-6,1,-71),
+    Position = UDim2.fromOffset(3,38),
+    Size = UDim2.new(1,-6,1,-43),
     BackgroundTransparency = 1,
     BorderSizePixel = 0,
     ScrollBarThickness = 5,
+    ScrollBarImageColor3 = v7.Muted,
     AutomaticCanvasSize = Enum.AutomaticSize.Y,
-    CanvasSize = UDim2.new(),
-    ScrollingDirection = Enum.ScrollingDirection.Y
+    CanvasSize = UDim2.new()
 });
-v17("UIListLayout",v66,{
+v17("UIListLayout",v64,{
     SortOrder = Enum.SortOrder.LayoutOrder,
     Padding = UDim.new(0,1)
 });
 
-local v67 = {};
-local function v68(v69,v70,v71,v72) --[[ Name: AddProperty ]]
-    table.insert(v67,{v69,v70,v71,v72});
-end;
-
-local function v73(v74) --[[ Name: FormatValue ]]
-    if typeof(v74) == "Color3" then
-        return string.format("%d, %d, %d",math.round(v74.R*255),math.round(v74.G*255),math.round(v74.B*255));
-    elseif typeof(v74) == "Vector3" then
-        return string.format("%.3f, %.3f, %.3f",v74.X,v74.Y,v74.Z);
-    elseif typeof(v74) == "UDim2" then
-        return string.format("%.3f, %d, %.3f, %d",v74.X.Scale,v74.X.Offset,v74.Y.Scale,v74.Y.Offset);
-    elseif typeof(v74) == "Instance" then
-        return v74.Name;
+local function v65(v66) --[[ Name: ClearRows ]]
+    for _,v67 in ipairs(v66:GetChildren()) do
+        if v67:IsA("GuiObject") then
+            v67:Destroy();
+        end;
     end;
-    return tostring(v74);
 end;
 
-local function v75(v76,v77) --[[ Name: ParseValue ]]
-    local v78 = typeof(v76);
-    if v78 == "boolean" then
-        if v77 == "true" then return true; end;
-        if v77 == "false" then return false; end;
-    elseif v78 == "number" then
-        return tonumber(v77);
-    elseif v78 == "string" then
-        return v77;
-    elseif v78 == "Color3" then
-        local v79 = {};
-        for v80 in string.gmatch(v77,"[-%d%.]+") do
-            table.insert(v79,tonumber(v80));
-        end;
-        if #v79 == 3 then
-            return Color3.fromRGB(math.clamp(v79[1],0,255),math.clamp(v79[2],0,255),math.clamp(v79[3],0,255));
-        end;
-    elseif v78 == "Vector3" then
-        local v81 = {};
-        for v82 in string.gmatch(v77,"[-%d%.]+") do
-            table.insert(v81,tonumber(v82));
-        end;
-        if #v81 == 3 then return Vector3.new(v81[1],v81[2],v81[3]); end;
-    elseif v78 == "UDim2" then
-        local v83 = {};
-        for v84 in string.gmatch(v77,"[-%d%.]+") do
-            table.insert(v83,tonumber(v84));
-        end;
-        if #v83 == 4 then return UDim2.new(v83[1],v83[2],v83[3],v83[4]); end;
+local function v68(v69) --[[ Name: FormatValue ]]
+    local v70 = typeof(v69);
+    if v70 == "Color3" then
+        return string.format("%d, %d, %d",math.round(v69.R*255),math.round(v69.G*255),math.round(v69.B*255));
+    elseif v70 == "Vector3" then
+        return string.format("%.2f, %.2f, %.2f",v69.X,v69.Y,v69.Z);
+    elseif v70 == "Vector2" then
+        return string.format("%.2f, %.2f",v69.X,v69.Y);
+    elseif v70 == "UDim2" then
+        return string.format("%.3f, %d, %.3f, %d",v69.X.Scale,v69.X.Offset,v69.Y.Scale,v69.Y.Offset);
+    elseif v70 == "UDim" then
+        return string.format("%.3f, %d",v69.Scale,v69.Offset);
+    elseif v70 == "Instance" then
+        return v69:GetFullName();
+    elseif v70 == "EnumItem" then
+        return v69.Name;
+    end;
+    return tostring(v69);
+end;
+
+local function v71(v72,v73) --[[ Name: ParseValue ]]
+    local v74 = typeof(v72);
+    if v74 == "string" then return v73; end;
+    if v74 == "number" then return tonumber(v73); end;
+    if v74 == "boolean" then
+        if string.lower(v73) == "true" then return true; end;
+        if string.lower(v73) == "false" then return false; end;
+        return nil;
+    end;
+    local v75 = {};
+    for v76 in string.gmatch(v73,"[-+]?%d*%.?%d+") do
+        table.insert(v75,tonumber(v76));
+    end;
+    if v74 == "Color3" and #v75 == 3 then
+        return Color3.fromRGB(
+            math.clamp(v75[1],0,255),
+            math.clamp(v75[2],0,255),
+            math.clamp(v75[3],0,255)
+        );
+    elseif v74 == "Vector3" and #v75 == 3 then
+        return Vector3.new(v75[1],v75[2],v75[3]);
+    elseif v74 == "Vector2" and #v75 == 2 then
+        return Vector2.new(v75[1],v75[2]);
+    elseif v74 == "UDim2" and #v75 == 4 then
+        return UDim2.new(v75[1],v75[2],v75[3],v75[4]);
+    elseif v74 == "UDim" and #v75 == 2 then
+        return UDim.new(v75[1],v75[2]);
     end;
     return nil;
 end;
 
-local function v85(v86) --[[ Name: ClearList ]]
-    for _,v87 in ipairs(v86:GetChildren()) do
-        if v87:IsA("GuiObject") then v87:Destroy(); end;
-    end;
-end;
-
-local function v88(v89,v90) --[[ Name: PropertyCategory ]]
-    local v91 = v17("Frame",v66,{
-        Name = v89,
-        Size = UDim2.new(1,-5,0,25),
+local function v77(v78,v79) --[[ Name: PropertyCategory ]]
+    local v80 = v17("Frame",v64,{
+        Name = "Category_"..v78,
+        Size = UDim2.new(1,-5,0,26),
         BackgroundColor3 = v7.Header,
         BorderSizePixel = 0,
-        LayoutOrder = v90
+        LayoutOrder = v79
     });
-    local v92 = v24(v91,"Category",UDim2.new(1,-12,1,0),"⌄  "..v89,14);
-    v92.Position = UDim2.fromOffset(7,0);
-    v92.Font = Enum.Font.SourceSansSemibold;
+    local v81 = v24(v80,"Label",UDim2.new(1,-12,1,0),"⌄  "..v78);
+    v81.Position = UDim2.fromOffset(8,0);
+    v81.Font = Enum.Font.SourceSansSemibold;
 end;
 
-local function v93(v94,v95,v96,v97) --[[ Name: PropertyRow ]]
-    local v98 = v17("Frame",v66,{
-        Name = v94,
-        Size = UDim2.new(1,-5,0,27),
-        BackgroundColor3 = v95%2 == 0 and v7.Row or v7.Alternate,
+local function v82(v83,v84,v85,v86) --[[ Name: PropertyRow ]]
+    local v87 = v17("Frame",v64,{
+        Name = "Property_"..v83,
+        Size = UDim2.new(1,-5,0,28),
+        BackgroundColor3 = v84%2 == 0 and v7.Row or v7.Alternate,
         BorderSizePixel = 0,
-        LayoutOrder = v95
+        LayoutOrder = v84
     });
-    local v99 = v24(v98,"PropertyName",UDim2.new(0.43,-8,1,0),v94,13);
-    v99.Position = UDim2.fromOffset(8,0);
-    local v100 = v17("Frame",v98,{
-        Position = UDim2.new(0.43,0,0,0),
-        Size = UDim2.new(0.57,0,1,0),
-        BackgroundTransparency = 1
-    });
-    local v101 = v17("TextBox",v100,{
-        Size = UDim2.new(1,-5,1,-3),
-        Position = UDim2.fromOffset(2,1),
-        BackgroundTransparency = 1,
+    local v88 = v24(v87,"PropertyName",UDim2.new(0.43,-8,1,0),v83);
+    v88.Position = UDim2.fromOffset(8,0);
+
+    if typeof(v85) == "boolean" and v86 then
+        local v89 = v29(v87,"Boolean",UDim2.new(0.56,-7,1,-4),v85 and "☑ true" or "☐ false");
+        v89.Position = UDim2.new(0.43,3,0,2);
+        v89.TextXAlignment = Enum.TextXAlignment.Left;
+        v89.BackgroundColor3 = v7.Input;
+        v89.MouseButton1Click:Connect(function() --[[ Name: ToggleBoolean ]]
+            if not v9 then return; end;
+            local v90,v91 = pcall(function()
+                v9[v83] = not v9[v83];
+                return v9[v83];
+            end);
+            if v90 then
+                v89.Text = v91 and "☑ true" or "☐ false";
+            end;
+        end);
+        return;
+    end;
+
+    local v92 = v17("TextBox",v87,{
+        Name = "Value",
+        Position = UDim2.new(0.43,3,0,2),
+        Size = UDim2.new(0.56,-7,1,-4),
+        BackgroundColor3 = v7.Input,
+        BackgroundTransparency = v86 and 0 or 0.5,
         BorderSizePixel = 0,
-        Text = v73(v96),
-        TextColor3 = v97 and Color3.fromRGB(235,235,235) or v7.Muted,
+        Text = v68(v85),
+        TextColor3 = v86 and v7.Text or v7.Muted,
         TextSize = 13,
         Font = Enum.Font.SourceSans,
-        TextXAlignment = Enum.TextXAlignment.Left,
         ClearTextOnFocus = false,
-        TextEditable = v97
+        TextEditable = v86,
+        TextXAlignment = Enum.TextXAlignment.Left
     });
-    if v97 then
-        v101.FocusLost:Connect(function() --[[ Name: EditProperty ]]
-            if not v9 or not v9.Parent then return; end;
-            local v102 = v75(v96,v101.Text);
-            if v102 ~= nil then
+    v17("UIPadding",v92,{PaddingLeft = UDim.new(0,5)});
+
+    if v86 then
+        v92.FocusLost:Connect(function() --[[ Name: SaveProperty ]]
+            if not v9 then return; end;
+            local v93 = v71(v85,v92.Text);
+            if v93 ~= nil then
                 pcall(function()
-                    v9[v94] = v102;
+                    v9[v83] = v93;
                 end);
             end;
-            local v103,v104 = pcall(function()
-                return v9[v94];
+            local v94,v95 = pcall(function()
+                return v9[v83];
             end);
-            if v103 then v101.Text = v73(v104); end;
+            if v94 then v92.Text = v68(v95); end;
         end);
     end;
 end;
 
-local function v105() --[[ Name: UpdateProperties ]]
+local function v96() --[[ Name: UpdateProperties ]]
     if not v9 then return; end;
-    v85(v66);
-    v65.Text = v35(v9).."  "..v9.Name.."  ("..v9.ClassName..")";
-    table.clear(v67);
+    v65(v64);
+    local v97,v98 = v34(v9);
+    v63.Text = v97.."  "..v9.Name.."  ("..v9.ClassName..")";
 
-    v68("Appearance","Name",true);
-    v68("Data","ClassName",false);
-    v68("Data","Parent",false);
-    v68("Data","Archivable",true);
+    local v99 = {};
+    local function v100(v101,v102,v103) --[[ Name: RegisterProperty ]]
+        table.insert(v99,{v101,v102,v103 == true});
+    end;
+
+    v100("Data","Name",true);
+    v100("Data","ClassName",false);
+    v100("Data","Parent",false);
+    v100("Data","Archivable",true);
 
     if v9:IsA("BasePart") then
-        v68("Appearance","Color",true);
-        v68("Appearance","Material",false);
-        v68("Appearance","Transparency",true);
-        v68("Appearance","Reflectance",true);
-        v68("Data","Size",true);
-        v68("Data","Position",true);
-        v68("Data","Orientation",true);
-        v68("Behavior","Anchored",true);
-        v68("Behavior","CanCollide",true);
-        v68("Behavior","CanTouch",true);
-        v68("Behavior","CanQuery",true);
-        v68("Behavior","Massless",true);
-    elseif v9:IsA("GuiObject") then
-        v68("Appearance","BackgroundColor3",true);
-        v68("Appearance","BackgroundTransparency",true);
-        v68("Appearance","BorderSizePixel",true);
-        v68("Data","Position",true);
-        v68("Data","Size",true);
-        v68("Data","AnchorPoint",false);
-        v68("Data","Rotation",true);
-        v68("Data","ZIndex",true);
-        v68("Behavior","Visible",true);
-        v68("Behavior","Active",true);
-        if v9:IsA("TextLabel") or v9:IsA("TextButton") or v9:IsA("TextBox") then
-            v68("Text","Text",true);
-            v68("Text","TextColor3",true);
-            v68("Text","TextTransparency",true);
-            v68("Text","TextSize",true);
-            v68("Text","TextScaled",true);
-        end;
-    elseif v9:IsA("Sound") then
-        v68("Sound","SoundId",true);
-        v68("Sound","Volume",true);
-        v68("Sound","PlaybackSpeed",true);
-        v68("Sound","Looped",true);
-        v68("Sound","Playing",true);
-        v68("Sound","TimePosition",true);
-        v68("Sound","TimeLength",false);
-        v68("Sound","PlaybackLoudness",false);
-    elseif v9:IsA("Light") then
-        v68("Appearance","Color",true);
-        v68("Appearance","Brightness",true);
-        v68("Appearance","Enabled",true);
-        v68("Appearance","Shadows",true);
-        v68("Appearance","Range",true);
-    elseif v9:IsA("UIGradient") then
-        v68("Appearance","Enabled",true);
-        v68("Appearance","Rotation",true);
-        v68("Appearance","Offset",false);
-        v68("Appearance","Color",false);
-        v68("Appearance","Transparency",false);
-    elseif v9:IsA("Model") then
-        v68("Data","PrimaryPart",false);
-        v68("Behavior","LevelOfDetail",false);
-    elseif v9:IsA("ValueBase") then
-        v68("Data","Value",true);
-    elseif v9:IsA("Script") or v9:IsA("LocalScript") then
-        v68("Behavior","Enabled",false);
-        v68("Data","RunContext",false);
+        v100("Appearance","Color",true);
+        v100("Appearance","Material",false);
+        v100("Appearance","Transparency",true);
+        v100("Appearance","Reflectance",true);
+        v100("Data","Size",true);
+        v100("Data","Position",true);
+        v100("Data","Orientation",true);
+        v100("Behavior","Anchored",true);
+        v100("Behavior","CanCollide",true);
+        v100("Behavior","CanTouch",true);
+        v100("Behavior","CanQuery",true);
+        v100("Behavior","Massless",true);
     end;
 
-    local v106 = {"Appearance","Data","Behavior","Text","Sound"};
-    local v107 = 0;
-    for _,v108 in ipairs(v106) do
-        local v109 = false;
-        for _,v110 in ipairs(v67) do
-            if v110[1] == v108 then
-                if not v109 then
-                    v107 = v107+1;
-                    v88(v108,v107);
-                    v109 = true;
-                end;
-                local v111,v112 = pcall(function()
-                    return v9[v110[2]];
+    if v9:IsA("GuiObject") then
+        v100("Appearance","BackgroundColor3",true);
+        v100("Appearance","BackgroundTransparency",true);
+        v100("Appearance","BorderSizePixel",true);
+        v100("Data","Position",true);
+        v100("Data","Size",true);
+        v100("Data","AnchorPoint",true);
+        v100("Data","Rotation",true);
+        v100("Data","ZIndex",true);
+        v100("Behavior","Visible",true);
+        v100("Behavior","Active",true);
+        if v9:IsA("TextLabel") or v9:IsA("TextButton") or v9:IsA("TextBox") then
+            v100("Text","Text",true);
+            v100("Text","TextColor3",true);
+            v100("Text","TextTransparency",true);
+            v100("Text","TextSize",true);
+            v100("Text","TextScaled",true);
+        end;
+        if v9:IsA("ImageLabel") or v9:IsA("ImageButton") then
+            v100("Image","Image",true);
+            v100("Image","ImageColor3",true);
+            v100("Image","ImageTransparency",true);
+        end;
+    end;
+
+    if v9:IsA("Sound") then
+        v100("Sound","SoundId",true);
+        v100("Sound","Volume",true);
+        v100("Sound","PlaybackSpeed",true);
+        v100("Sound","Looped",true);
+        v100("Sound","Playing",true);
+        v100("Sound","TimePosition",true);
+        v100("Sound","TimeLength",false);
+        v100("Sound","PlaybackLoudness",false);
+    end;
+
+    if v9:IsA("Light") then
+        v100("Appearance","Color",true);
+        v100("Appearance","Brightness",true);
+        v100("Appearance","Enabled",true);
+        v100("Appearance","Shadows",true);
+        v100("Appearance","Range",true);
+    end;
+
+    if v9:IsA("UIGradient") then
+        v100("Appearance","Color",false);
+        v100("Appearance","Transparency",false);
+        v100("Appearance","Enabled",true);
+        v100("Appearance","Offset",true);
+        v100("Appearance","Rotation",true);
+    end;
+
+    if v9:IsA("Model") then
+        v100("Data","PrimaryPart",false);
+        v100("Behavior","LevelOfDetail",false);
+    end;
+
+    if v9:IsA("ValueBase") then
+        v100("Data","Value",true);
+    end;
+
+    if v9:IsA("Script") or v9:IsA("LocalScript") then
+        v100("Behavior","Enabled",false);
+        v100("Data","RunContext",false);
+    end;
+
+    local v104 = {"Appearance","Data","Behavior","Text","Image","Sound"};
+    local v105 = 0;
+    for _,v106 in ipairs(v104) do
+        local v107 = false;
+        for _,v108 in ipairs(v99) do
+            if v108[1] == v106 then
+                local v109,v110 = pcall(function()
+                    return v9[v108[2]];
                 end);
-                if v111 then
-                    v107 = v107+1;
-                    v93(v110[2],v107,v112,v110[3]);
+                if v109 then
+                    if not v107 then
+                        v105 = v105+1;
+                        v77(v106,v105);
+                        v107 = true;
+                    end;
+                    v105 = v105+1;
+                    v82(v108[2],v105,v110,v108[3]);
                 end;
             end;
         end;
     end;
 end;
 
-local function v113(v114) --[[ Name: HasChildren ]]
-    return #v114:GetChildren() > 0;
-end;
-
-local function v115(v116,v117,v118) --[[ Name: TreeRow ]]
-    local v119 = v17("Frame",v63,{
+local function v111(v112,v113,v114) --[[ Name: ObjectRow ]]
+    local v115 = v17("Frame",v61,{
         Name = "ObjectRow",
-        LayoutOrder = v118,
+        LayoutOrder = v114,
         Size = UDim2.new(1,-7,0,23),
-        BackgroundColor3 = v116 == v9 and v7.Selected or v7.Background,
+        BackgroundColor3 = v112 == v9 and v7.Selected or v7.Background,
         BorderSizePixel = 0
     });
-    local v120 = math.min(v117*16,140);
-    local v121 = v30(v119,"Expand",UDim2.fromOffset(18,23),v113(v116) and (v10[v116] and "⌄" or "›") or "");
-    v121.Position = UDim2.fromOffset(v120,0);
-    v121.BackgroundTransparency = 1;
-    local v122,v123 = v35(v116);
-    local v124 = v24(v119,"Icon",UDim2.fromOffset(21,23),v122,16);
-    v124.Position = UDim2.fromOffset(v120+19,0);
-    v124.TextColor3 = v123;
-    v124.TextXAlignment = Enum.TextXAlignment.Center;
-    local v125 = v30(v119,"Object",UDim2.new(1,-v120-43,1,0),v116.Name);
-    v125.Position = UDim2.fromOffset(v120+42,0);
-    v125.BackgroundTransparency = 1;
-    v125.TextXAlignment = Enum.TextXAlignment.Left;
-    v125.TextSize = 14;
-    v125.TextTruncate = Enum.TextTruncate.AtEnd;
-    v125.MouseButton1Click:Connect(function() --[[ Name: SelectObject ]]
-        v9 = v116;
-        v105();
+    local v116 = math.min(v113*15,135);
+    local v117 = #v112:GetChildren() > 0;
+    local v118 = v29(v115,"Expand",UDim2.fromOffset(18,23),v117 and (v10[v112] and "⌄" or "›") or "");
+    v118.Position = UDim2.fromOffset(v116,0);
+    v118.BackgroundTransparency = 1;
+
+    local v119,v120 = v34(v112);
+    local v121 = v24(v115,"Icon",UDim2.fromOffset(21,23),v119);
+    v121.Position = UDim2.fromOffset(v116+19,0);
+    v121.TextColor3 = v120;
+    v121.TextXAlignment = Enum.TextXAlignment.Center;
+    v121.TextSize = 16;
+
+    local v122 = v29(v115,"Name",UDim2.new(1,-v116-43,1,0),v112.Name);
+    v122.Position = UDim2.fromOffset(v116+42,0);
+    v122.TextXAlignment = Enum.TextXAlignment.Left;
+    v122.TextTruncate = Enum.TextTruncate.AtEnd;
+    v122.BackgroundTransparency = 1;
+
+    v122.MouseButton1Click:Connect(function() --[[ Name: SelectObject ]]
+        v9 = v112;
+        v96();
         v14 = true;
     end);
-    v121.MouseButton1Click:Connect(function() --[[ Name: ToggleNode ]]
-        v10[v116] = not v10[v116];
+    v118.MouseButton1Click:Connect(function() --[[ Name: ExpandObject ]]
+        v10[v112] = not v10[v112];
         v14 = true;
     end);
 end;
 
-local function v126() --[[ Name: UpdateExplorer ]]
+local function v123() --[[ Name: UpdateExplorer ]]
     if v15 then return; end;
     v15 = true;
-    v85(v63);
-    local v127 = string.lower(v62.Text);
-    local v128 = 0;
-    local v129 = 0;
-    local v130 = {};
-    local function v131(v132,v133) --[[ Name: AddTree ]]
-        if v128 >= 450 or v133 > 25 then return; end;
-        if v127 ~= "" then
-            local v134 = string.find(string.lower(v132.Name),v127,1,true);
-            if v134 then
-                v128 = v128+1;
-                v115(v132,v133,v128);
-            end;
-        else
-            v128 = v128+1;
-            v115(v132,v133,v128);
-            if v10[v132] then
-                local v135 = v132:GetChildren();
-                table.sort(v135,function(v136,v137)
-                    return string.lower(v136.Name) < string.lower(v137.Name);
-                end);
-                for _,v138 in ipairs(v135) do
-                    v131(v138,v133+1);
-                    if v128 >= 450 then break; end;
-                end;
-            end;
+    v65(v61);
+
+    local v124 = string.lower(v60.Text);
+    local v125 = 0;
+    local v126 = 0;
+
+    local function v127(v128,v129) --[[ Name: DrawTree ]]
+        if v125 >= 350 or v129 > 20 then return; end;
+        v125 = v125+1;
+        v111(v128,v129,v125);
+        if not v10[v128] then return; end;
+        local v130 = v128:GetChildren();
+        table.sort(v130,function(v131,v132)
+            return string.lower(v131.Name) < string.lower(v132.Name);
+        end);
+        for _,v133 in ipairs(v130) do
+            if v125 >= 350 then break; end;
+            v127(v133,v129+1);
         end;
     end;
-    if v127 ~= "" then
-        local function v139(v140) --[[ Name: SearchTree ]]
-            if v129 >= 3000 or v128 >= 450 then return; end;
-            v129 = v129+1;
-            if string.find(string.lower(v140.Name),v127,1,true) then
-                v128 = v128+1;
-                v115(v140,0,v128);
-            end;
-            for _,v141 in ipairs(v140:GetChildren()) do
-                v139(v141);
-                if v129 >= 3000 or v128 >= 450 then break; end;
-            end;
+
+    local function v134(v135) --[[ Name: SearchObjects ]]
+        if v125 >= 350 or v126 >= 5000 then return; end;
+        v126 = v126+1;
+        if string.find(string.lower(v135.Name),v124,1,true) then
+            v125 = v125+1;
+            v111(v135,0,v125);
         end;
-        v139(v3);
+        for _,v136 in ipairs(v135:GetChildren()) do
+            if v125 >= 350 or v126 >= 5000 then break; end;
+            v134(v136);
+        end;
+    end;
+
+    if v124 == "" then
+        v127(v3,0);
     else
-        v131(v3,0);
+        v134(v3);
     end;
     v15 = false;
 end;
 
-v62:GetPropertyChangedSignal("Text"):Connect(function() --[[ Name: SearchChanged ]]
+v60:GetPropertyChangedSignal("Text"):Connect(function() --[[ Name: SearchChanged ]]
     v14 = true;
 end);
 
-v2.InputChanged:Connect(function(v142) --[[ Name: WindowInputChanged ]]
-    if not v11 then return; end;
-    if v142.UserInputType ~= Enum.UserInputType.MouseMovement and v142.UserInputType ~= Enum.UserInputType.Touch then return; end;
-    if v11.Input.UserInputType == Enum.UserInputType.Touch and v142 ~= v11.Input then return; end;
-    local v143 = v142.Position-v11.Start;
-    if v11.Mode == "Move" then
-        local v144 = v11.Position;
-        v11.Target.Position = UDim2.new(
-            v144.X.Scale,v144.X.Offset+v143.X,
-            v144.Y.Scale,v144.Y.Offset+v143.Y
+v2.InputChanged:Connect(function(v137) --[[ Name: WindowInputChanged ]]
+    if not v12 then return; end;
+    if v137.UserInputType ~= Enum.UserInputType.MouseMovement and v137.UserInputType ~= Enum.UserInputType.Touch then return; end;
+    if v12.Input.UserInputType == Enum.UserInputType.Touch and v137 ~= v12.Input then return; end;
+
+    local v138 = v137.Position-v12.Start;
+    local v139 = v12.Window;
+    if v12.Mode == "Move" then
+        local v140 = v12.Position;
+        v139.Position = UDim2.new(
+            v140.X.Scale,v140.X.Offset+v138.X,
+            v140.Y.Scale,v140.Y.Offset+v138.Y
         );
     else
-        v11.Target.Size = UDim2.fromOffset(
-            math.max(230,v11.Size.X+v143.X),
-            math.max(180,v11.Size.Y+v143.Y)
+        v139.Size = UDim2.fromOffset(
+            math.max(230,v12.Size.X+v138.X),
+            math.max(180,v12.Size.Y+v138.Y)
         );
     end;
 end);
 
-v2.InputEnded:Connect(function(v145) --[[ Name: WindowInputEnded ]]
-    if v11 and (v145 == v11.Input or (v11.Input.UserInputType == Enum.UserInputType.MouseButton1 and v145.UserInputType == Enum.UserInputType.MouseButton1)) then
-        v11 = nil;
+v2.InputEnded:Connect(function(v141) --[[ Name: WindowInputEnded ]]
+    if not v12 then return; end;
+    if v141 == v12.Input or (v141.UserInputType == Enum.UserInputType.MouseButton1 and v12.Input.UserInputType == Enum.UserInputType.MouseButton1) then
+        v12 = nil;
     end;
 end);
 
-local function v146() --[[ Name: QueueExplorerRefresh ]]
-    if v16 then return; end;
-    v16 = true;
-    task.delay(0.35,function()
-        v16 = nil;
-        v14 = true;
+local function v142() --[[ Name: QueueRefresh ]]
+    v16 = v16+1;
+    local v143 = v16;
+    task.delay(0.4,function()
+        if v143 == v16 and v8.Parent then
+            v14 = true;
+        end;
     end);
 end;
 
-v3.DescendantAdded:Connect(v146);
-v3.DescendantRemoving:Connect(function(v147) --[[ Name: ObjectRemoving ]]
-    if v147 == v9 or v9:IsDescendantOf(v147) then
+v3.DescendantAdded:Connect(v142);
+v3.DescendantRemoving:Connect(function(v144) --[[ Name: ObjectRemoving ]]
+    if v144 == v9 or (v9 ~= v3 and v9:IsDescendantOf(v144)) then
         v9 = v3;
-        v105();
+        v96();
     end;
-    v146();
+    v142();
 end);
 
 task.spawn(function() --[[ Name: ExplorerRefresh ]]
-    while v6.Parent do
+    while v8.Parent do
         if v14 then
             v14 = false;
-            v126();
+            v123();
         end;
         task.wait(0.15);
     end;
 end);
 
-v105();
-v126();
+v96();
+v123();
