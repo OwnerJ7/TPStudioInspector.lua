@@ -594,6 +594,7 @@ local function v174(v175) --[[ Name: ExportScreenGui ]]
 end;
 local function v192(v193) --[[ Name: ShowExportWindow ]]
 	if v157 then v157:Destroy(); end;
+	local v202 = v174(v193) or "";
 	v157 = v21("Frame",v8,{
 		Name = "GUIExport",Position = UDim2.new(0.5,-350,0.5,-230),Size = UDim2.fromOffset(700,460),
 		BackgroundColor3 = v7.Background,BorderColor3 = v7.Border,BorderSizePixel = 1,
@@ -604,24 +605,52 @@ local function v192(v193) --[[ Name: ShowExportWindow ]]
 		BorderSizePixel = 0,Active = true,ZIndex = 161
 	});
 	local v195 = v28(v194,"Title",UDim2.new(1,-42,1,0),"Código generado: "..v193.Name);
-	v195.Position = UDim2.fromOffset(9,0); v195.ZIndex = 162;
+	v195.Position = UDim2.fromOffset(9,0);v195.ZIndex = 162;
 	local v196 = v33(v194,"Close",UDim2.fromOffset(32,32),"×");
-	v196.Position = UDim2.new(1,-32,0,0); v196.ZIndex = 162;
+	v196.Position = UDim2.new(1,-32,0,0);v196.ZIndex = 162;
 	v196.MouseButton1Click:Connect(function() --[[ Name: CloseExport ]]
-		v157:Destroy(); v157 = nil;
+		v157:Destroy();v157 = nil;
 	end);
 	local v197 = v21("TextBox",v157,{
-		Name = "GeneratedScript",Position = UDim2.fromOffset(9,65),Size = UDim2.new(1,-18,1,-107),
-		BackgroundColor3 = v7.Input,BorderSizePixel = 0,Text = v174(v193) or "",
+		Name = "GeneratedScript",Position = UDim2.fromOffset(9,65),Size = UDim2.new(1,-18,1,-154),
+		BackgroundColor3 = v7.Input,BorderSizePixel = 0,Text = v202,
 		TextColor3 = v7.Text,TextSize = 13,Font = Enum.Font.Code,
 		TextXAlignment = Enum.TextXAlignment.Left,TextYAlignment = Enum.TextYAlignment.Top,
 		TextWrapped = false,MultiLine = true,ClearTextOnFocus = false,
 		TextEditable = true,ZIndex = 161
 	});
-	local v198 = v28(v157,"Hint",UDim2.new(1,-18,0,24),"Haz clic en el código y presiona Ctrl+A y Ctrl+C. Pégalo en un LocalScript.");
+	local v198 = v28(v157,"Hint",UDim2.new(1,-18,0,24),"Selecciona y copia el código completo para usarlo en tu LocalScript.");
 	v198.Position = UDim2.fromOffset(10,34);v198.ZIndex = 161;
+	local v203 = v33(v157,"SelectAll",UDim2.fromOffset(170,34),"Seleccionar todo");
+	v203.Position = UDim2.new(0,10,1,-79);v203.ZIndex = 162;
+	local v204 = v33(v157,"CopyCode",UDim2.fromOffset(160,34),"Copiar código");
+	v204.Position = UDim2.new(0,190,1,-79);v204.ZIndex = 162;
+	local v205 = v28(v157,"CopyStatus",UDim2.new(1,-365,0,34),"");
+	v205.Position = UDim2.new(0,365,1,-79);v205.ZIndex = 162;v205.TextWrapped = true;
+	local function v206() --[[ Name: SelectAllGeneratedCode ]]
+		v197.Text = v202;
+		v197:CaptureFocus();
+		v197.CursorPosition = #v202+1;
+		v197.SelectionStart = 1;
+	end;
+	v203.MouseButton1Click:Connect(function() --[[ Name: SelectAll ]]
+		v206();
+		v205.Text = "Seleccionado. Pulsa Ctrl+C.";
+	end);
+	v204.MouseButton1Click:Connect(function() --[[ Name: CopyCode ]]
+		local v207 = setclipboard or toclipboard;
+		if type(v207) == "function" then
+			local v208 = pcall(v207,v202);
+			if v208 then
+				v205.Text = "Código copiado.";
+				return;
+			end;
+		end;
+		v206();
+		v205.Text = "Seleccionado. Pulsa Ctrl+C.";
+	end);
 	local v199 = v28(v157,"Limit",UDim2.new(1,-18,0,23),"Copia visual local: no incluye Source de scripts ni eventos internos.");
-	v199.Position = UDim2.new(0,10,1,-29);v199.TextColor3 = v7.Muted;v199.ZIndex = 161;
+	v199.Position = UDim2.new(0,10,1,-32);v199.TextColor3 = v7.Muted;v199.ZIndex = 161;
 	v194.InputBegan:Connect(function(v200) --[[ Name: DragExport ]]
 		if v200.UserInputType == Enum.UserInputType.MouseButton1 or v200.UserInputType == Enum.UserInputType.Touch then
 			v16 = {Window = v157,Input = v200,Mode = "Move",Start = v200.Position,Position = v157.Position,Size = v157.AbsoluteSize};
