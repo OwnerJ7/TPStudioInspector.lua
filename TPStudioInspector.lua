@@ -502,7 +502,7 @@ local v154 = v21("Frame",v8,{
 	BackgroundColor3 = v7.Header,BorderColor3 = v7.Border,
 	BorderSizePixel = 1,Visible = false,ZIndex = 150
 });
-local v155 = v33(v154,"CopyGui",UDim2.new(1,-4,1,-4),"Copiar GUI");
+local v155 = v33(v154,"CopyGui",UDim2.new(1,-4,1,-4),"Exportar GUI");
 v155.Position = UDim2.fromOffset(2,2);
 v155.ZIndex = 151;
 local v156 = nil;
@@ -629,18 +629,18 @@ local function v192(v193) --[[ Name: ShowExportWindow ]]
         TextYAlignment=Enum.TextYAlignment.Top,TextWrapped=false,MultiLine=true,
         ClearTextOnFocus=false,TextEditable=true,ZIndex=162
     });
-    local v212 = v33(v157,"SelectAll",UDim2.fromOffset(169,38),"▤  Seleccionar todo");
+    local v212 = v33(v157,"SelectAll",UDim2.fromOffset(169,38),"▤  Seleccionar texto");
     v212.Position=UDim2.new(0,13,1,-77);v212.ZIndex=163;
     v212.BackgroundColor3=Color3.fromRGB(58,60,67);
     v21("UICorner",v212,{CornerRadius=UDim.new(0,8)});
-    local v213 = v33(v157,"CopyCode",UDim2.fromOffset(163,38),"▣  Copiar código");
+    local v213 = v33(v157,"CopyCode",UDim2.fromOffset(163,38),"💾  Save");
     v213.Position=UDim2.new(0,190,1,-77);v213.ZIndex=163;
     v213.BackgroundColor3=Color3.fromRGB(231,232,235);v213.TextColor3=Color3.fromRGB(16,17,20);
     v21("UICorner",v213,{CornerRadius=UDim.new(0,8)});
-    local v214 = v28(v157,"Status",UDim2.new(1,-370,0,37),"Selecciona todo y pulsa Ctrl+C.");
+    local v214 = v28(v157,"Status",UDim2.new(1,-370,0,37),"Guarda el código generado como archivo .lua.");
     v214.Position=UDim2.new(0,365,1,-76);v214.ZIndex=163;v214.TextWrapped=true;
     v214.TextSize=12;v214.TextColor3=Color3.fromRGB(190,192,199);
-    local v215 = v28(v157,"Limit",UDim2.new(1,-25,0,24),"Solo apariencia y propiedades legibles; no exporta código fuente ni conexiones de scripts.");
+    local v215 = v28(v157,"Limit",UDim2.new(1,-25,0,24),"Save crea un .lua solo si el entorno permite escribir archivos; no incluye Source ni eventos.");
     v215.Position=UDim2.new(0,14,1,-31);v215.ZIndex=163;v215.TextSize=12;
     v215.TextColor3=Color3.fromRGB(149,151,160);
     local function v216() --[[ Name: SelectGeneratedCode ]]
@@ -655,17 +655,31 @@ local function v192(v193) --[[ Name: ShowExportWindow ]]
     end;
     v212.MouseButton1Click:Connect(function() --[[ Name: SelectAll ]]
         v216();
-        v214.Text="Texto seleccionado. Presiona Ctrl+C.";
+        v214.Text="Intenta seleccionar el texto. Save evita necesitar copiarlo.";
     end);
-    v213.MouseButton1Click:Connect(function() --[[ Name: CopyCode ]]
-        -- No official clipboard writing API exists for a Roblox LocalScript.
-        local v217 = setclipboard or toclipboard;
-        if type(v217)=="function" then
-            local v218 = pcall(v217,v202);
-            if v218 then v214.Text="Código copiado al portapapeles.";return;end;
+    v213.MouseButton1Click:Connect(function() --[[ Name: SaveGeneratedCode ]]
+        local v217 = "TPStudioInspector/ExportedGUIs";
+        local v218 = string.gsub(v193.Name,"[^%w_%-]","_");
+        if v218 == "" then v218 = "ScreenGui"; end;
+        local v219 = v217.."/"..v218..".lua";
+        local v220 = writefile;
+        if type(v220) == "function" then
+            local v221,v222 = pcall(function()
+                if type(isfolder) == "function" and type(makefolder) == "function" then
+                    if not isfolder("TPStudioInspector") then makefolder("TPStudioInspector"); end;
+                    if not isfolder(v217) then makefolder(v217); end;
+                end;
+                v220(v219,v202);
+            end);
+            if v221 then
+                v214.Text = "Guardado: "..v219;
+            else
+                v214.Text = "No se pudo guardar: "..tostring(v222);
+            end;
+            return;
         end;
-        v216();
-        v214.Text="Pulsa Ctrl+C para copiar el texto seleccionado.";
+        -- Standard Roblox LocalScripts cannot write files to the device.
+        v214.Text = "Save requiere acceso a archivos. Roblox normal no permite guardar .lua desde LocalScript.";
     end);
     v206.InputBegan:Connect(function(v219) --[[ Name: DragExport ]]
         if v219.UserInputType==Enum.UserInputType.MouseButton1 or v219.UserInputType==Enum.UserInputType.Touch then
