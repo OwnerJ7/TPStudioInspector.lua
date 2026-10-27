@@ -591,12 +591,12 @@ local function v172(v173) --[[ Name: IsExportable ]]
 end;
 local function v174(v175) --[[ Name: ExportObject ]]
  if not v175 or not v172(v175) then return nil;end;
- local v176={"--[[ Owen Dexv | Exported client-visible object | Luau ]]","-- Place this as a LocalScript in StarterPlayerScripts for GUI exports.","-- For world models use a Script in ServerScriptService and review physics/ownership.","-- Exported object reconstruction."};
+ local v176={"--[[ Owen Dexv | Exported client-visible object | Luau ]]","-- Place this as a LocalScript in StarterPlayerScripts for GUI exports.","-- For world models use a Script in ServerScriptService and review physics/ownership.","-- Exported object reconstruction.","local vObjects={};"};
  local v177={};local v178={};local v179=1;
  local function v180(v181,v182) --[[ Name: ExportNode ]]
   if not v172(v181) then return;end;
-  v179+=1;local v183="v"..v179;
-  table.insert(v176,"local "..v183.."=Instance.new("..string.format("%q",v181.ClassName)..");");
+  v179+=1;local v183="vObjects["..v179.."]";
+  table.insert(v176,v183.."=Instance.new("..string.format("%q",v181.ClassName)..");");
   v177[v181]=v183;
   local v184={};
   for _,v185 in ipairs(v164) do
