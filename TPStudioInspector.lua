@@ -1,26 +1,26 @@
 
---[[ TP Studio Inspector | Client ]]
+--[[ Owen Dexv | Client ]]
 local v1 = game:GetService("Players");
 local v2 = game:GetService("UserInputService");
 local v3 = game:GetService("RunService");
 local v4 = v1.LocalPlayer;
 local v5 = v4:WaitForChild("PlayerGui");
-local v6 = v5:FindFirstChild("TPStudioInspector");
+local v6 = v5:FindFirstChild("OwenDexv");
 if v6 then v6:Destroy(); end;
 
 local v7 = {
-	Background = Color3.fromRGB(37,37,37),
-	Header = Color3.fromRGB(46,46,46),
-	Row = Color3.fromRGB(44,44,44),
-	Alternate = Color3.fromRGB(40,40,40),
-	Input = Color3.fromRGB(54,54,54),
-	Selected = Color3.fromRGB(17,76,169),
-	Text = Color3.fromRGB(230,230,230),
-	Muted = Color3.fromRGB(166,166,166),
-	Border = Color3.fromRGB(65,65,65)
+	Background = Color3.fromRGB(12,12,14),
+	Header = Color3.fromRGB(20,20,23),
+	Row = Color3.fromRGB(24,24,27),
+	Alternate = Color3.fromRGB(17,17,20),
+	Input = Color3.fromRGB(30,30,34),
+	Selected = Color3.fromRGB(64,64,75),
+	Text = Color3.fromRGB(250,250,250),
+	Muted = Color3.fromRGB(180,180,185),
+	Border = Color3.fromRGB(208,208,213)
 };
 local v8 = Instance.new("ScreenGui");
-v8.Name = "TPStudioInspector";
+v8.Name = "OwenDexv";
 v8.ResetOnSpawn = false;
 v8.DisplayOrder = 100;
 v8.ZIndexBehavior = Enum.ZIndexBehavior.Sibling;
@@ -114,10 +114,12 @@ local function v40(v41,v42,v43) --[[ Name: Window ]]
 		Position = v42,
 		BackgroundColor3 = v7.Background,
 		BorderColor3 = v7.Border,
-		BorderSizePixel = 1,
+		BorderSizePixel = 0,
 		ClipsDescendants = true,
 		Active = true
 	});
+	v21("UICorner",v44,{CornerRadius=UDim.new(0,8)});
+	v21("UIStroke",v44,{Color=v7.Border,Transparency=0.32,Thickness=1});
 	local v45 = v21("Frame",v44,{
 		Name = "TitleBar",
 		Size = UDim2.new(1,0,0,30),
@@ -203,6 +205,8 @@ local v56 = v21("Frame",v8,{
 local v57 = v33(v56,"Explorer",UDim2.fromOffset(148,28),"Explorador");
 local v58 = v33(v56,"Properties",UDim2.fromOffset(150,28),"Propiedades");
 v58.Position = UDim2.fromOffset(154,0);
+v21("UICorner",v57,{CornerRadius=UDim.new(0,6)});
+v21("UICorner",v58,{CornerRadius=UDim.new(0,6)});
 
 local v59,v60 = v40("Explorador",UDim2.fromOffset(8,44),UDim2.fromOffset(305,490));
 local v61,v62 = v40("Propiedades",UDim2.fromOffset(322,44),UDim2.fromOffset(365,490));
@@ -331,6 +335,7 @@ local function v80(v81,v82) --[[ Name: AddCategory ]]
 	v84.Font = Enum.Font.SourceSansSemibold;
 end;
 
+local v223 = {};
 local function v85(v86,v87,v88,v89,v90) --[[ Name: AddProperty ]]
 	local v91 = v21("Frame",v67,{
 		Name = "Property_"..v86,
@@ -357,6 +362,13 @@ local function v85(v86,v87,v88,v89,v90) --[[ Name: AddProperty ]]
 		TextXAlignment = Enum.TextXAlignment.Left
 	});
 	v21("UIPadding",v93,{PaddingLeft = UDim.new(0,5)});
+	local v224 = pcall(function()
+		table.insert(v223,v90:GetPropertyChangedSignal(v86):Connect(function() --[[ Name: LiveProperty ]]
+			if v14 ~= v90 or not v93.Parent or v93:IsFocused() then return; end;
+			local v225,v226 = pcall(function() return v90[v86]; end);
+			if v225 then v93.Text = v71(v226); end;
+		end));
+	end);
 	if v89 then
 		v93.FocusLost:Connect(function() --[[ Name: SaveProperty ]]
 			if v14 ~= v90 then return; end;
@@ -372,6 +384,8 @@ local function v85(v86,v87,v88,v89,v90) --[[ Name: AddProperty ]]
 end;
 
 local function v97() --[[ Name: UpdateProperties ]]
+	for _,v224 in ipairs(v223) do v224:Disconnect(); end;
+	table.clear(v223);
 	v68(v67);
 	if not v14 then return; end;
 	local v98,v99 = v38(v14);
@@ -496,202 +510,155 @@ local function v112(v113) --[[ Name: GetChildren ]]
 end;
 
 
---[[ GUI exporter | Client-readable GUI properties only ]]
+--[[ Direct exporter | Client-visible instances only ]]
 local v154 = v21("Frame",v8,{
-	Name = "ContextMenu",Size = UDim2.fromOffset(145,32),
-	BackgroundColor3 = v7.Header,BorderColor3 = v7.Border,
-	BorderSizePixel = 1,Visible = false,ZIndex = 150
+ Name="ContextMenu",Size=UDim2.fromOffset(155,36),BackgroundColor3=v7.Header,
+ BorderSizePixel=0,Visible=false,ZIndex=150
 });
-local v155 = v33(v154,"CopyGui",UDim2.new(1,-4,1,-4),"Exportar GUI");
-v155.Position = UDim2.fromOffset(2,2);
-v155.ZIndex = 151;
+v21("UICorner",v154,{CornerRadius=UDim.new(0,7)});
+v21("UIStroke",v154,{Color=v7.Border,Transparency=0.2,Thickness=1});
+local v155 = v33(v154,"Save",UDim2.new(1,-6,1,-6),"Save");
+v155.Position=UDim2.fromOffset(3,3);v155.ZIndex=151;
+v21("UICorner",v155,{CornerRadius=UDim.new(0,5)});
 local v156 = nil;
-local v157 = nil;
+local v157 = v28(v8,"SaveStatus",UDim2.fromOffset(440,32),"");
+v157.Position=UDim2.new(0,9,1,-42);v157.BackgroundTransparency=0;
+v157.BackgroundColor3=v7.Header;v157.TextXAlignment=Enum.TextXAlignment.Center;
+v157.Visible=false;v157.ZIndex=200;
+v21("UICorner",v157,{CornerRadius=UDim.new(0,7)});
+v21("UIStroke",v157,{Color=v7.Border,Transparency=0.35});
+local v158 = 0;
+local function v159(v160) --[[ Name: ShowStatus ]]
+ v158+=1;local v161=v158;
+ v157.Text=v160;v157.Visible=true;
+ task.delay(4,function() --[[ Name: HideStatus ]]
+  if v157.Parent and v158==v161 then v157.Visible=false;end;
+ end);
+end;
 local v164 = {
-	"Name","Archivable","Enabled","ResetOnSpawn","DisplayOrder","IgnoreGuiInset","ZIndexBehavior","ScreenInsets","SafeAreaCompatibility","ClipToDeviceSafeArea",
-	"Position","Size","AnchorPoint","Rotation","Visible","Active","Selectable","ClipsDescendants","ZIndex","LayoutOrder","AutomaticSize",
-	"BackgroundColor3","BackgroundTransparency","BorderColor3","BorderSizePixel","BorderMode","SelectionImageObject",
-	"Text","TextColor3","TextTransparency","TextSize","TextScaled","TextWrapped","TextXAlignment","TextYAlignment","TextTruncate","RichText","MaxVisibleGraphemes","LineHeight","Font","FontFace","TextStrokeColor3","TextStrokeTransparency","TextDirection","PlaceholderText","PlaceholderColor3","ClearTextOnFocus","MultiLine","TextEditable",
-	"Image","ImageColor3","ImageTransparency","ImageRectOffset","ImageRectSize","ScaleType","SliceCenter","SliceScale","TileSize","ResampleMode",
-	"AutoButtonColor","Modal","Style","Selected","Interactable","ScrollingEnabled","ScrollingDirection","CanvasSize","AutomaticCanvasSize","ScrollBarThickness","ScrollBarImageColor3","ScrollBarImageTransparency","VerticalScrollBarInset","HorizontalScrollBarInset","ElasticBehavior",
-	"CornerRadius","Thickness","ApplyStrokeMode","LineJoinMode","Transparency","Color","Offset","Rotation","Enabled","FillDirection","HorizontalAlignment","VerticalAlignment","Padding","SortOrder","CellSize","CellPadding","FillDirectionMaxCells","StartCorner","AspectRatio","AspectType","DominantAxis","MinSize","MaxSize","MinTextSize","MaxTextSize","PaddingLeft","PaddingRight","PaddingTop","PaddingBottom","Scale","Value","MaxValue","MinValue","MaxCount","Key","Animated","EasingDirection","EasingStyle","TweenTime","Circular","ElasticBehavior"
+ "Name","Archivable","Enabled","ResetOnSpawn","DisplayOrder","IgnoreGuiInset","ZIndexBehavior","ScreenInsets","SafeAreaCompatibility","ClipToDeviceSafeArea",
+ "Position","Size","AnchorPoint","Rotation","Visible","Active","Selectable","ClipsDescendants","ZIndex","LayoutOrder","AutomaticSize",
+ "BackgroundColor3","BackgroundTransparency","BorderColor3","BorderSizePixel","BorderMode",
+ "Text","TextColor3","TextTransparency","TextSize","TextScaled","TextWrapped","TextXAlignment","TextYAlignment","TextTruncate","RichText","MaxVisibleGraphemes","LineHeight","Font","FontFace","TextStrokeColor3","TextStrokeTransparency","TextDirection","PlaceholderText","PlaceholderColor3","ClearTextOnFocus","MultiLine","TextEditable",
+ "Image","ImageColor3","ImageTransparency","ImageRectOffset","ImageRectSize","ScaleType","SliceCenter","SliceScale","TileSize","ResampleMode",
+ "AutoButtonColor","Modal","Style","Selected","Interactable","ScrollingEnabled","ScrollingDirection","CanvasSize","AutomaticCanvasSize","ScrollBarThickness","ScrollBarImageColor3","ScrollBarImageTransparency","VerticalScrollBarInset","HorizontalScrollBarInset","ElasticBehavior",
+ "CornerRadius","Thickness","ApplyStrokeMode","LineJoinMode","Transparency","Color","Offset","FillDirection","HorizontalAlignment","VerticalAlignment","Padding","SortOrder","CellSize","CellPadding","FillDirectionMaxCells","StartCorner","AspectRatio","AspectType","DominantAxis","MinSize","MaxSize","MinTextSize","PaddingLeft","PaddingRight","PaddingTop","PaddingBottom","Scale","Value","MaxValue","MinValue","MaxCount","Key","Animated","EasingDirection","EasingStyle","TweenTime","Circular",
+ "CFrame","PivotOffset","PrimaryPart","Orientation","Reflectance","Material","MaterialVariant","CastShadow","Anchored","CanCollide","CanTouch","CanQuery","CollisionGroup","Massless","Locked","Shape","TopSurface","BottomSurface","LeftSurface","RightSurface","FrontSurface","BackSurface",
+ "MeshId","TextureID","TextureId","DoubleSided","RenderFidelity","Size","Color","Transparency","LocalTransparencyModifier","UsePartColor","Texture","StudsPerTileU","StudsPerTileV","Face","LightEmission","LightInfluence",
+ "Brightness","Range","Shadows","Angle","InnerAngle","OuterAngle","Width","Height","LightColor","SoundId","Volume","PlaybackSpeed","Looped","RollOffMaxDistance","RollOffMinDistance","RollOffMode","EmitterSize","PlayOnRemove",
+ "PrimaryAxis","SecondaryAxis","Axis","SecondaryAxis","Attachment0","Attachment1","Part0","Part1","Enabled","MaxForce","MaxTorque","Responsiveness","RigidityEnabled","WorldPosition","WorldCFrame","WorldAxis","WorldSecondaryAxis",
+ "StudsOffset","StudsOffsetWorldSpace","Adornee","AlwaysOnTop","MaxDistance","LightInfluence","PixelsPerStud","Face","ExtentsOffset","ExtentsOffsetWorldSpace","SizeOffset",
+ "MeshType","Scale","Offset","VertexColor","MeshId","TextureId","TextureID","AnimationId","Value","MaxValue","MinValue"
 };
 local function v165(v166) --[[ Name: SerializeValue ]]
-	local v167 = typeof(v166);
-	if v167 == "string" then return string.format("%q",v166); end;
-	if v167 == "boolean" or v167 == "number" then return tostring(v166); end;
-	if v167 == "Color3" then return string.format("Color3.new(%.9g,%.9g,%.9g)",v166.R,v166.G,v166.B); end;
-	if v167 == "Vector2" then return string.format("Vector2.new(%.9g,%.9g)",v166.X,v166.Y); end;
-	if v167 == "Vector3" then return string.format("Vector3.new(%.9g,%.9g,%.9g)",v166.X,v166.Y,v166.Z); end;
-	if v167 == "UDim" then return string.format("UDim.new(%.9g,%d)",v166.Scale,v166.Offset); end;
-	if v167 == "UDim2" then return string.format("UDim2.new(%.9g,%d,%.9g,%d)",v166.X.Scale,v166.X.Offset,v166.Y.Scale,v166.Y.Offset); end;
-	if v167 == "Rect" then return string.format("Rect.new(%.9g,%.9g,%.9g,%.9g)",v166.Min.X,v166.Min.Y,v166.Max.X,v166.Max.Y); end;
-	if v167 == "EnumItem" then return tostring(v166); end;
-	if v167 == "NumberRange" then return string.format("NumberRange.new(%.9g,%.9g)",v166.Min,v166.Max); end;
-	if v167 == "ColorSequence" then
-		local v168 = {};
-		for _,v169 in ipairs(v166.Keypoints) do
-			table.insert(v168,string.format("ColorSequenceKeypoint.new(%.9g,%s)",v169.Time,v165(v169.Value)));
-		end;
-		return "ColorSequence.new({"..table.concat(v168,",").."})";
-	end;
-	if v167 == "NumberSequence" then
-		local v170 = {};
-		for _,v171 in ipairs(v166.Keypoints) do
-			table.insert(v170,string.format("NumberSequenceKeypoint.new(%.9g,%.9g,%.9g)",v171.Time,v171.Value,v171.Envelope));
-		end;
-		return "NumberSequence.new({"..table.concat(v170,",").."})";
-	end;
-	if v167 == "Font" then
-		return string.format("Font.new(%q,%s,%s)",v166.Family,tostring(v166.Weight),tostring(v166.Style));
-	end;
-	return nil;
+ local v167=typeof(v166);
+ if v167=="string" then return string.format("%q",v166);end;
+ if v167=="boolean" then return tostring(v166);end;
+ if v167=="number" then
+  if v166~=v166 or v166==math.huge or v166==-math.huge then return nil;end;
+  return string.format("%.17g",v166);
+ end;
+ if v167=="Color3" then return string.format("Color3.new(%.17g,%.17g,%.17g)",v166.R,v166.G,v166.B);end;
+ if v167=="Vector2" then return string.format("Vector2.new(%.17g,%.17g)",v166.X,v166.Y);end;
+ if v167=="Vector3" then return string.format("Vector3.new(%.17g,%.17g,%.17g)",v166.X,v166.Y,v166.Z);end;
+ if v167=="CFrame" then
+  local v168={v166:GetComponents()};
+  for v169,v170 in ipairs(v168) do v168[v169]=string.format("%.17g",v170);end;
+  return "CFrame.new("..table.concat(v168,",")..")";
+ end;
+ if v167=="UDim" then return string.format("UDim.new(%.17g,%d)",v166.Scale,v166.Offset);end;
+ if v167=="UDim2" then return string.format("UDim2.new(%.17g,%d,%.17g,%d)",v166.X.Scale,v166.X.Offset,v166.Y.Scale,v166.Y.Offset);end;
+ if v167=="Rect" then return string.format("Rect.new(%.17g,%.17g,%.17g,%.17g)",v166.Min.X,v166.Min.Y,v166.Max.X,v166.Max.Y);end;
+ if v167=="EnumItem" then return tostring(v166);end;
+ if v167=="NumberRange" then return string.format("NumberRange.new(%.17g,%.17g)",v166.Min,v166.Max);end;
+ if v167=="ColorSequence" then
+  local v168={};
+  for _,v169 in ipairs(v166.Keypoints) do table.insert(v168,string.format("ColorSequenceKeypoint.new(%.17g,%s)",v169.Time,v165(v169.Value)));end;
+  return "ColorSequence.new({"..table.concat(v168,",").."})";
+ end;
+ if v167=="NumberSequence" then
+  local v168={};
+  for _,v169 in ipairs(v166.Keypoints) do table.insert(v168,string.format("NumberSequenceKeypoint.new(%.17g,%.17g,%.17g)",v169.Time,v169.Value,v169.Envelope));end;
+  return "NumberSequence.new({"..table.concat(v168,",").."})";
+ end;
+ if v167=="Font" then return string.format("Font.new(%q,%s,%s)",v166.Family,tostring(v166.Weight),tostring(v166.Style));end;
+ if v167=="BrickColor" then return "BrickColor.new("..string.format("%q",v166.Name)..")";end;
+ if v167=="PhysicalProperties" then return string.format("PhysicalProperties.new(%.17g,%.17g,%.17g,%.17g,%.17g)",v166.Density,v166.Friction,v166.Elasticity,v166.FrictionWeight,v166.ElasticityWeight);end;
+ return nil;
 end;
 local function v172(v173) --[[ Name: IsExportable ]]
-	return v173:IsA("LayerCollector") or v173:IsA("GuiObject") or v173:IsA("UIComponent") or v173:IsA("UIConstraint") or v173:IsA("UILayout") or v173:IsA("UICorner") or v173:IsA("UIGradient") or v173:IsA("UIStroke") or v173:IsA("UIPadding") or v173:IsA("UIAspectRatioConstraint") or v173:IsA("UISizeConstraint") or v173:IsA("UITextSizeConstraint") or v173:IsA("UIFlexItem") or v173:IsA("Folder");
+ return v173:IsA("LayerCollector") or v173:IsA("GuiObject") or v173:IsA("UIComponent") or v173:IsA("UIConstraint") or v173:IsA("UILayout") or v173:IsA("Folder") or v173:IsA("Model") or v173:IsA("BasePart") or v173:IsA("Attachment") or v173:IsA("Constraint") or v173:IsA("JointInstance") or v173:IsA("SpecialMesh") or v173:IsA("DataModelMesh") or v173:IsA("Decal") or v173:IsA("Texture") or v173:IsA("Light") or v173:IsA("ParticleEmitter") or v173:IsA("Trail") or v173:IsA("Beam") or v173:IsA("Sound") or v173:IsA("Animation") or v173:IsA("ValueBase") or v173:IsA("Configuration") or v173:IsA("WrapLayer") or v173:IsA("WrapTarget") or v173:IsA("Script") or v173:IsA("LocalScript") or v173:IsA("ModuleScript");
 end;
-local function v174(v175) --[[ Name: ExportScreenGui ]]
-	if not v175 or not v175:IsA("ScreenGui") then return nil; end;
-	local v176 = {"--[[ Generated UI recreation | LocalScript | StarterPlayerScripts ]]",'local v1 = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui");'};
-	local v177 = {};
-	local v178 = {};
-	local v179 = 1;
-	local function v180(v181,v182) --[[ Name: ExportNode ]]
-		if not v172(v181) then return; end;
-		v179 = v179+1;
-		local v183 = "v"..v179;
-		table.insert(v176,"local "..v183.." = Instance.new("..string.format("%q",v181.ClassName)..");");
-		for _,v184 in ipairs(v164) do
-			if v184 ~= "Parent" and v184 ~= "SelectionImageObject" then
-				local v185,v186 = pcall(function() return v181[v184]; end);
-				if v185 then
-					local v187 = v165(v186);
-					if v187 then
-						table.insert(v176,"pcall(function() "..v183.."."..v184.." = "..v187.."; end);");
-					end;
-				end;
-			end;
-		end;
-		for v188,v189 in pairs(v181:GetAttributes()) do
-			local v190 = v165(v189);
-			if v190 then table.insert(v176,"pcall(function() "..v183..":SetAttribute("..string.format("%q",v188)..","..v190.."); end);"); end;
-		end;
-		table.insert(v176,v183..".Parent = "..v182..";");
-		v177[v181] = v183;
-		for _,v191 in ipairs(v181:GetChildren()) do
-			v180(v191,v183);
-		end;
-	end;
-	v180(v175,"v1");
-	table.insert(v176,"-- Script Source, runtime connections and protected values are not available from a client.");
-	return table.concat(v176,"\n");
-end;
-local function v192(v193) --[[ Name: ShowExportWindow ]]
-    if v157 then v157:Destroy();v157=nil; end;
-    local v202 = v174(v193) or "";
-    local v203 = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1280,720);
-    local v204 = math.min(850,math.max(360,v203.X-35));
-    local v205 = math.min(590,math.max(300,v203.Y-60));
-    v157 = v21("Frame",v8,{
-        Name="GUIExport",AnchorPoint=Vector2.new(0.5,0.5),Position=UDim2.fromScale(0.5,0.5),
-        Size=UDim2.fromOffset(v204,v205),BackgroundColor3=Color3.fromRGB(16,17,20),
-        BackgroundTransparency=0.04,BorderSizePixel=0,Active=true,ZIndex=160
-    });
-    v21("UICorner",v157,{CornerRadius=UDim.new(0,12)});
-    v21("UIStroke",v157,{Color=Color3.fromRGB(91,94,103),Thickness=1,Transparency=0.38});
-    local v206 = v21("Frame",v157,{
-        Name="Header",Size=UDim2.new(1,0,0,61),BackgroundColor3=Color3.fromRGB(26,27,31),
-        BackgroundTransparency=0.05,BorderSizePixel=0,Active=true,ZIndex=161
-    });
-    v21("UICorner",v206,{CornerRadius=UDim.new(0,12)});
-    local v207 = v28(v206,"Title",UDim2.new(1,-58,0,30),"▣  EXPORTAR GUI  ·  "..v193.Name);
-    v207.Position=UDim2.fromOffset(15,5);v207.ZIndex=162;v207.TextSize=17;
-    v207.Font=Enum.Font.GothamBold;v207.TextColor3=Color3.new(1,1,1);
-    local v208 = v28(v206,"Subtitle",UDim2.new(1,-30,0,19),"Código Luau  ·  "..tostring(#v202).." caracteres  ·  copia visual del cliente");
-    v208.Position=UDim2.fromOffset(16,34);v208.ZIndex=162;v208.TextSize=12;
-    v208.Font=Enum.Font.Gotham;v208.TextColor3=Color3.fromRGB(172,175,183);
-    local v209 = v33(v206,"Close",UDim2.fromOffset(34,34),"×");
-    v209.Position=UDim2.new(1,-43,0,10);v209.ZIndex=164;v209.BackgroundColor3=Color3.fromRGB(45,46,52);
-    v21("UICorner",v209,{CornerRadius=UDim.new(0,7)});
-    v209.MouseButton1Click:Connect(function() --[[ Name: CloseExport ]]
-        if v157 then v157:Destroy();v157=nil;end;
-    end);
-    local v210 = v21("Frame",v157,{
-        Name="CodeSurface",Position=UDim2.fromOffset(13,72),Size=UDim2.new(1,-26,1,-160),
-        BackgroundColor3=Color3.fromRGB(9,10,13),BorderSizePixel=0,ZIndex=161
-    });
-    v21("UICorner",v210,{CornerRadius=UDim.new(0,8)});
-    v21("UIStroke",v210,{Color=Color3.fromRGB(58,60,67),Thickness=1,Transparency=0.35});
-    local v211 = v21("TextBox",v210,{
-        Name="GeneratedScript",Position=UDim2.fromOffset(9,8),Size=UDim2.new(1,-18,1,-16),
-        BackgroundTransparency=1,Text=v202,TextColor3=Color3.fromRGB(225,230,239),
-        TextSize=13,Font=Enum.Font.Code,TextXAlignment=Enum.TextXAlignment.Left,
-        TextYAlignment=Enum.TextYAlignment.Top,TextWrapped=false,MultiLine=true,
-        ClearTextOnFocus=false,TextEditable=true,ZIndex=162
-    });
-    local v212 = v33(v157,"SelectAll",UDim2.fromOffset(169,38),"▤  Seleccionar texto");
-    v212.Position=UDim2.new(0,13,1,-77);v212.ZIndex=163;
-    v212.BackgroundColor3=Color3.fromRGB(58,60,67);
-    v21("UICorner",v212,{CornerRadius=UDim.new(0,8)});
-    local v213 = v33(v157,"CopyCode",UDim2.fromOffset(163,38),"💾  Save");
-    v213.Position=UDim2.new(0,190,1,-77);v213.ZIndex=163;
-    v213.BackgroundColor3=Color3.fromRGB(231,232,235);v213.TextColor3=Color3.fromRGB(16,17,20);
-    v21("UICorner",v213,{CornerRadius=UDim.new(0,8)});
-    local v214 = v28(v157,"Status",UDim2.new(1,-370,0,37),"Guarda el código generado como archivo .lua.");
-    v214.Position=UDim2.new(0,365,1,-76);v214.ZIndex=163;v214.TextWrapped=true;
-    v214.TextSize=12;v214.TextColor3=Color3.fromRGB(190,192,199);
-    local v215 = v28(v157,"Limit",UDim2.new(1,-25,0,24),"Save crea un .lua solo si el entorno permite escribir archivos; no incluye Source ni eventos.");
-    v215.Position=UDim2.new(0,14,1,-31);v215.ZIndex=163;v215.TextSize=12;
-    v215.TextColor3=Color3.fromRGB(149,151,160);
-    local function v216() --[[ Name: SelectGeneratedCode ]]
-        if not v211.Parent then return; end;
-        v211.Text=v202;
-        v211:CaptureFocus();
-        task.defer(function() --[[ Name: ApplySelectionAfterFocus ]]
-            if not v211.Parent then return; end;
-            v211.CursorPosition=#v202+1;
-            v211.SelectionStart=1;
-        end);
+local function v174(v175) --[[ Name: ExportObject ]]
+ if not v175 or not v172(v175) then return nil;end;
+ local v176={"--[[ Owen Dexv | Exported client-visible object | Luau ]]","-- Place this as a LocalScript in StarterPlayerScripts for GUI exports.","-- For world models use a Script in ServerScriptService and review physics/ownership.","-- Exported object reconstruction."};
+ local v177={};local v178={};local v179=1;
+ local function v180(v181,v182) --[[ Name: ExportNode ]]
+  if not v172(v181) then return;end;
+  v179+=1;local v183="v"..v179;
+  table.insert(v176,"local "..v183.."=Instance.new("..string.format("%q",v181.ClassName)..");");
+  v177[v181]=v183;
+  local v184={};
+  for _,v185 in ipairs(v164) do
+   if not v184[v185] and (not v181:IsA("BasePart") or (v185~="Position" and v185~="Orientation")) and v185~="Parent" and v185~="WorldPosition" and v185~="WorldCFrame" and v185~="WorldAxis" and v185~="WorldSecondaryAxis" and v185~="LocalTransparencyModifier" then
+    v184[v185]=true;
+    local v186,v187=pcall(function() return v181[v185];end);
+    if v186 then
+     if typeof(v187)=="Instance" then
+      table.insert(v178,{v183,v185,v187});
+     else
+      local v188=v165(v187);
+      if v188 then table.insert(v176,"pcall(function() "..v183.."."..v185.."="..v188..";end);");end;
+     end;
     end;
-    v212.MouseButton1Click:Connect(function() --[[ Name: SelectAll ]]
-        v216();
-        v214.Text="Intenta seleccionar el texto. Save evita necesitar copiarlo.";
-    end);
-    v213.MouseButton1Click:Connect(function() --[[ Name: SaveGeneratedCode ]]
-        local v217 = "TPStudioInspector/ExportedGUIs";
-        local v218 = string.gsub(v193.Name,"[^%w_%-]","_");
-        if v218 == "" then v218 = "ScreenGui"; end;
-        local v219 = v217.."/"..v218..".lua";
-        local v220 = writefile;
-        if type(v220) == "function" then
-            local v221,v222 = pcall(function()
-                if type(isfolder) == "function" and type(makefolder) == "function" then
-                    if not isfolder("TPStudioInspector") then makefolder("TPStudioInspector"); end;
-                    if not isfolder(v217) then makefolder(v217); end;
-                end;
-                v220(v219,v202);
-            end);
-            if v221 then
-                v214.Text = "Guardado: "..v219;
-            else
-                v214.Text = "No se pudo guardar: "..tostring(v222);
-            end;
-            return;
-        end;
-        -- Standard Roblox LocalScripts cannot write files to the device.
-        v214.Text = "Save requiere acceso a archivos. Roblox normal no permite guardar .lua desde LocalScript.";
-    end);
-    v206.InputBegan:Connect(function(v219) --[[ Name: DragExport ]]
-        if v219.UserInputType==Enum.UserInputType.MouseButton1 or v219.UserInputType==Enum.UserInputType.Touch then
-            v16={Window=v157,Input=v219,Mode="Move",Start=v219.Position,Position=v157.Position,Size=v157.AbsoluteSize};
-        end;
-    end);
+   end;
+  end;
+  for v189,v190 in pairs(v181:GetAttributes()) do
+   local v191=v165(v190);
+   if v191 then table.insert(v176,"pcall(function() "..v183..":SetAttribute("..string.format("%q",v189)..","..v191..");end);");end;
+  end;
+  if v181:IsA("BaseScript") then table.insert(v176,"pcall(function() "..v183..".Enabled=false;end);");end;
+  table.insert(v176,v183..".Parent="..v182..";");
+  for _,v192 in ipairs(v181:GetChildren()) do v180(v192,v183);end;
+ end;
+ local v193=(v175:IsA("LayerCollector") or v175:IsA("GuiObject")) and 'game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")' or 'workspace';
+ -- A Frame or any other GUI child needs a ScreenGui host to display on its own.
+ if v175:IsA("GuiObject") then
+  table.insert(v176,'local vHost=Instance.new("ScreenGui");vHost.Name="OwenDexv_ExportHost";vHost.ResetOnSpawn=false;vHost.Parent=game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui");');
+  v193="vHost";
+ end;
+ v180(v175,v193);
+ for _,v194 in ipairs(v178) do
+  local v195=v177[v194[3]];
+  if v195 then table.insert(v176,"pcall(function() "..v194[1].."."..v194[2].."="..v195..";end);");end;
+ end;
+ table.insert(v176,"-- Script Source, runtime connections and server-only objects cannot be recovered by a client.");
+ return table.concat(v176,"\n");
 end;
-v155.MouseButton1Click:Connect(function() --[[ Name: CopyGui ]]
-	v154.Visible = false;
-	if v156 and v156:IsA("ScreenGui") then v192(v156); end;
+local function v192(v193) --[[ Name: SaveObject ]]
+ local v194=v174(v193);
+ if not v194 then v159("Objeto no compatible con exportación.");return;end;
+ if type(writefile)~="function" then
+  v159("No guardado: este entorno no dispone de writefile().");return;
+ end;
+ local v195=v193:IsA("LayerCollector") or v193:IsA("GuiObject");
+ local v196=v195 and "ExportedGUIs" or "ExportedModels";
+ local v197=v193.Name:gsub("[^%w_%-]","_");
+ if v197=="" then v197=v193.ClassName;end;
+ local v198="OwenDexv/"..v196.."/"..v197..".lua";
+ local v199,v200=pcall(function() --[[ Name: WriteExport ]]
+  if type(isfolder)=="function" and type(makefolder)=="function" then
+   if not isfolder("OwenDexv") then makefolder("OwenDexv");end;
+   if not isfolder("OwenDexv/"..v196) then makefolder("OwenDexv/"..v196);end;
+  end;
+  writefile(v198,v194);
+ end);
+ if v199 then v159("Guardado: "..v198);else v159("Error al guardar: "..tostring(v200));end;
+end;
+v155.MouseButton1Click:Connect(function() --[[ Name: SaveContextObject ]]
+ v154.Visible=false;
+ if v156 and v156.Parent then v192(v156);end;
 end);
-
 local function v117(v118,v119,v120) --[[ Name: AddObjectRow ]]
 	local v121 = v21("Frame",v64,{
 		Name = "ObjectRow",
@@ -716,11 +683,11 @@ local function v117(v118,v119,v120) --[[ Name: AddObjectRow ]]
 	v128.TextTruncate = Enum.TextTruncate.AtEnd;
 	v128.BackgroundTransparency = 1;
 	v128.MouseButton2Click:Connect(function() --[[ Name: ContextMenu ]]
-		if v118:IsA("ScreenGui") and v118 ~= v8 then
+		if v118 ~= v8 and not v118:IsDescendantOf(v8) and v172(v118) then
 			v156 = v118;
 			local v200 = v2:GetMouseLocation();
 			local v201 = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1600,900);
-			v154.Position = UDim2.fromOffset(math.clamp(v200.X,0,math.max(0,v201.X-145)),math.clamp(v200.Y,0,math.max(0,v201.Y-32)));
+			v154.Position = UDim2.fromOffset(math.clamp(v200.X,0,math.max(0,v201.X-155)),math.clamp(v200.Y,0,math.max(0,v201.Y-36)));
 			v154.Visible = true;
 		else
 			v154.Visible = false;
@@ -826,6 +793,7 @@ for _,v151 in ipairs(v10) do
 end;
 
 v8.Destroying:Connect(function() --[[ Name: Cleanup ]]
+	for _,v224 in ipairs(v223) do v224:Disconnect();end;
 	v142:Disconnect();
 	v146:Disconnect();
 	for _,v153 in ipairs(v150) do v153:Disconnect(); end;
